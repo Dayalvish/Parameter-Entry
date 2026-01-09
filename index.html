@@ -118,9 +118,9 @@
             if (data && data.length > 0) {
                 const inputs = document.querySelectorAll('input[type="number"]');
                 inputs.forEach((input, index) => {
-                    // Mapping starts at Column J (Index 9) based on your new sheet layout
-                    if(data[index + 9] !== undefined && data[index + 9] !== "") {
-                        input.value = data[index + 9];
+                    // Mapping starts at Column J (Index 8) based on your new sheet layout
+                    if(data[index + 8] !== undefined && data[index + 8] !== "") {
+                        input.value = data[index + 8];
                     }
                 });
                 alert("Success! Last known data for " + fleetId + " loaded.");
@@ -195,6 +195,7 @@
 </script>
 </body>
 </html>
+
 
 
 
