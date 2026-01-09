@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epiroc Fleet Portal</title>
+    <title>EPIROC FLEET PARAMETER ENTRY FORM</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 20px; margin: 0; }
         .header-section { max-width: 700px; margin: 0 auto 10px auto; display: flex; flex-direction: column; align-items: flex-start; }
@@ -33,7 +33,7 @@
 
     <div class="header-section">
         <img src="Picture1.png" alt="Epiroc Logo" class="brand-logo" onerror="this.style.display='none'">
-        <h2>Epiroc Contract Fleet Parameter Data Entry Form</h2>
+        <h2>EPIROC FLEET PARAMETER ENTRY FORM</h2>
     </div>
 
     <form id="residencyForm">
@@ -42,17 +42,26 @@
                 <tr><td class="label-cell">Customer Name <span class="required-star">*</span></td>
                     <td><select id="customerSelect" name="Customer Name" onchange="updateSites(); checkValidation();" required>
                         <option value="">-- Select Customer --</option>
-                        <option value="TATA STEEL LTD">TATA STEEL LTD</option><option value="ULTRATECH LTD">ULTRATECH LTD</option><option value="AMBUJA CEMENTS LTD">AMBUJA CEMENTS LTD</option><option value="ACC LTD">ACC LTD</option><option value="LAFARGE">LAFARGE</option><option value="JSW LTD">JSW LTD</option><option value="ADANI ENTERPRISES">ADANI ENTERPRISES</option><option value="NMDC LTD">NMDC LTD</option><option value="BIRLA CORPORATION LIMITED">BIRLA CORPORATION LIMITED</option><option value="GANPATI METAL MINING">GANPATI METAL MINING</option>
+                        <option value="TATA STEEL LTD">TATA STEEL LTD</option>
+                        <option value="ULTRATECH LTD">ULTRATECH LTD</option>
+                        <option value="AMBUJA CEMENTS LTD">AMBUJA CEMENTS LTD</option>
+                        <option value="ACC LTD">ACC LTD</option>
+                        <option value="LAFARGE">LAFARGE</option>
+                        <option value="JSW LTD">JSW LTD</option>
+                        <option value="ADANI ENTERPRISES">ADANI ENTERPRISES</option>
+                        <option value="NMDC LTD">NMDC LTD</option>
+                        <option value="BIRLA CORPORATION LIMITED">BIRLA CORPORATION LIMITED</option>
+                        <option value="GANPATI METAL MINING">GANPATI METAL MINING</option>
                     </select></td>
                 </tr>
                 <tr><td class="label-cell">Date <span class="required-star">*</span></td><td><input type="date" name="Date" id="valDate" oninput="checkValidation()" required></td></tr>
                 <tr><td class="label-cell">Technician Name <span class="required-star">*</span></td><td><input type="text" name="Technician Name" id="valTech" oninput="checkValidation()" required></td></tr>
-                <tr><td class="label-cell" style="background-color: #fff3cd !important; color: #000 !important;">Unlock Password</td><td><input type="password" id="passInput" placeholder="Enter password to unlock"></td></tr>
+                <tr><td class="label-cell" style="background-color: #fff3cd !important; color: #000 !important;">Unlock Password</td><td><input type="password" id="passInput" placeholder="Enter password"></td></tr>
                 <tr><td class="label-cell">Status</td><td><span id="statusLabel" class="status-tag locked">Locked</span></td></tr>
 
                 <tbody id="protectedContent" class="hidden">
-                    <tr><td class="label-cell">Work Site <span class="required-star">*</span></td><td><select id="workSiteSelect" name="Work Site" onchange="updateFleet(); checkValidation();"><option value="">-- Select Customer First --</option></select></td></tr>
-                    <tr><td class="label-cell">Fleet ID <span class="required-star">*</span></td><td><select id="fleetSelect" name="Fleet" onchange="checkValidation()"><option value="">-- Select Work Site First --</option></select></td></tr>
+                    <tr><td class="label-cell">Work Site <span class="required-star">*</span></td><td><select id="workSiteSelect" name="Work Site" onchange="updateFleet(); checkValidation();"><option value="">-- Select Site --</option></select></td></tr>
+                    <tr><td class="label-cell">Fleet ID <span class="required-star">*</span></td><td><select id="fleetSelect" name="Fleet" onchange="checkValidation()"><option value="">-- Select Fleet --</option></select></td></tr>
                     <tr><td class="label-cell">Shift <span class="required-star">*</span></td><td><select name="Shift" id="valShift" onchange="checkValidation()"><option value="">-- Select Shift --</option><option>Shift A</option><option>Shift B</option><option>Shift C</option><option>G Shift</option></select></td></tr>
                     
                     <tr><td class="label-cell">Rotation Pressure</td><td><input type="number" step="any" name="Rotation Pressure"></td></tr>
@@ -104,32 +113,20 @@
         const scriptURL = _0x5a1e[1];
         const passKey = _0x5a1e[0];
 
-        // --- SECURITY TIMER LOGIC ---
         let idleTimer;
-        const IDLE_TIME_LIMIT = 5 * 60 * 1000; // 5 Minutes in milliseconds
+        const IDLE_LIMIT = 5 * 60 * 1000;
 
-        function resetIdleTimer() {
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(lockForm, IDLE_TIME_LIMIT);
-        }
-
-        function lockForm() {
+        function resetTimer() { clearTimeout(idleTimer); idleTimer = setTimeout(lock, IDLE_LIMIT); }
+        function lock() {
             document.getElementById('passInput').value = "";
             document.getElementById('protectedContent').classList.add('hidden');
             document.getElementById('formButtons').classList.add('hidden');
             document.getElementById('statusLabel').innerText = "Locked";
             document.getElementById('statusLabel').className = "status-tag locked";
             checkValidation();
-            console.log("Form auto-locked due to inactivity.");
         }
+        window.onload = resetTimer; document.onmousemove = resetTimer; document.onkeydown = resetTimer;
 
-        // Listen for activity to reset the timer
-        window.onload = resetIdleTimer;
-        document.onmousemove = resetIdleTimer;
-        document.onkeydown = resetIdleTimer;
-        document.onclick = resetIdleTimer;
-
-        // --- DATA MAPPING ---
         const customerToSites = {
             "TATA STEEL LTD": ["Noamundi Iron Ore Mines", "Khondbond Iron Ore Mines", "TSL West Bokaro Q-SE", "TSL West Bokaro Q-AB", "Joda Iron Ore Mines"],
             "ULTRATECH LTD": ["Rajshree Cements", "Kotputli Cement Works", "Manikgarh Cement Works", "Bela Cement Works", "Awarpur", "Kukurdih Cement Works", "Nathwara Cement Works", "Tadipatri Cement Works", "Rawan Cement Works", "Maihar Cement Works"],
@@ -160,11 +157,11 @@
             const customer = document.getElementById('customerSelect').value;
             const siteSelect = document.getElementById('workSiteSelect');
             const fleetSelect = document.getElementById('fleetSelect');
-            siteSelect.innerHTML = '<option value="">-- Select Work Site --</option>';
-            fleetSelect.innerHTML = '<option value="">-- Select Work Site First --</option>';
+            siteSelect.innerHTML = '<option value="">-- Select Site --</option>';
+            fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
             if (customerToSites[customer]) {
-                customerToSites[customer].forEach(site => {
-                    let opt = document.createElement('option'); opt.value = opt.text = site; siteSelect.add(opt);
+                customerToSites[customer].forEach(s => {
+                    let opt = document.createElement('option'); opt.value = opt.text = s; siteSelect.add(opt);
                 });
             }
         }
@@ -174,14 +171,14 @@
             const fleetSelect = document.getElementById('fleetSelect');
             fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
             if (siteToFleet[site]) {
-                siteToFleet[site].forEach(fleet => {
-                    let opt = document.createElement('option'); opt.value = opt.text = fleet; fleetSelect.add(opt);
+                siteToFleet[site].forEach(f => {
+                    let opt = document.createElement('option'); opt.value = opt.text = f; fleetSelect.add(opt);
                 });
             }
         }
 
         function checkValidation() {
-            const mandatoryFields = [
+            const fields = [
                 document.getElementById('customerSelect').value,
                 document.getElementById('valDate').value,
                 document.getElementById('valTech').value,
@@ -191,15 +188,15 @@
                 document.getElementById('valEngTemp').value,
                 document.getElementById('valEngOil').value
             ];
-            document.getElementById('submitBtn').disabled = mandatoryFields.some(val => !val || val.trim() === "");
+            document.getElementById('submitBtn').disabled = fields.some(v => !v || v.trim()==="");
         }
 
         document.getElementById('passInput').addEventListener('input', function() {
-            const isMatch = this.value === passKey;
-            document.getElementById('protectedContent').classList.toggle('hidden', !isMatch);
-            document.getElementById('formButtons').classList.toggle('hidden', !isMatch);
-            document.getElementById('statusLabel').innerText = isMatch ? "Unlocked" : "Locked";
-            document.getElementById('statusLabel').className = "status-tag " + (isMatch ? "unlocked" : "locked");
+            const match = this.value === passKey;
+            document.getElementById('protectedContent').classList.toggle('hidden', !match);
+            document.getElementById('formButtons').classList.toggle('hidden', !match);
+            document.getElementById('statusLabel').innerText = match ? "Unlocked" : "Locked";
+            document.getElementById('statusLabel').className = "status-tag " + (match ? "unlocked" : "locked");
             checkValidation();
         });
 
@@ -208,18 +205,12 @@
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.innerText = "Submitting..."; btn.disabled = true;
-
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
             .then(() => {
-                alert("Success! Record submitted.");
-                form.reset(); updateSites();
-                lockForm();
+                alert("Success!"); form.reset(); updateSites(); lock();
                 btn.innerText = "Submit Record";
             })
-            .catch(() => {
-                alert("Submission failed. Check connection.");
-                btn.disabled = false; btn.innerText = "Submit Record";
-            });
+            .catch(() => { alert("Failed."); btn.disabled = false; btn.innerText = "Submit Record"; });
         });
     </script>
 </body>
