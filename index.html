@@ -98,123 +98,46 @@
     </form>
 
     <script>
-        var _0x5a1e=["\x45\x70\x69\x72\x6f\x63\x40\x31\x32\x33","\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x41\x4b\x66\x79\x63\x62\x77\x72\x76\x5f\x51\x52\x57\x41\x34\x50\x6b\x79\x37\x30\x44\x69\x2d\x75\x4a\x79\x7a\x4a\x6a\x72\x4e\x52\x4f\x42\x6b\x71\x45\x43\x34\x55\x6e\x4d\x6e\x66\x53\x33\x47\x42\x63\x5a\x34\x52\x4f\x69\x49\x55\x32\x33\x4f\x30\x56\x54\x36\x75\x72\x36\x68\x77\x4c\x4b\x7a\x49\x4d\x67\x2f\x65\x78\x65\x63"];
-        const scriptURL = _0x5a1e[1];
-        const passKey = _0x5a1e[0];
+    // 1. Connection & Security
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzlX9ml9s_Rq1uTLJwVU4t9YQbLubLM14KY0ugi73fLy7Ui8apNCiRkrMfQ_lYR6Oo2oA/exec';
+    const passKey = 'Epiroc@123';
 
-        // Idle Timer (5 Mins)
-        let idleTimer;
-        function resetTimer() { clearTimeout(idleTimer); idleTimer = setTimeout(lockForm, 300000); }
-        window.onload = resetTimer; document.onmousemove = resetTimer; document.onkeydown = resetTimer;
-
-        function lockForm() {
-            document.getElementById('passInput').value = "";
-            document.getElementById('protectedContent').classList.add('hidden');
-            document.getElementById('formButtons').classList.add('hidden');
-            document.getElementById('statusLabel').innerText = "Locked";
-            document.getElementById('statusLabel').className = "status-tag locked";
-            checkValidation();
-        }
-
-        // Dropdown Data
-        const customerToSites = { "TATA STEEL LTD": ["Noamundi Iron Ore Mines", "Khondbond Iron Ore Mines", "TSL West Bokaro Q-SE", "TSL West Bokaro Q-AB", "Joda Iron Ore Mines"], "ULTRATECH LTD": ["Rajshree Cements", "Kotputli Cement Works", "Manikgarh Cement Works", "Bela Cement Works", "Awarpur", "Kukurdih Cement Works", "Nathwara Cement Works", "Tadipatri Cement Works", "Rawan Cement Works", "Maihar Cement Works"], "AMBUJA CEMENTS LTD": ["Ambuja Darlaghat", "Rabriyawas Cement Works"], "LAFARGE": ["Shella Lime Stone Quarry"], "ACC LTD": ["Wadi Cement Works", "Gagal Cement Works", "Kymore Cement Works"], "ADANI ENTERPRISES": ["Parsa Kenta Coal Mines"], "NMDC LTD": ["BACHELI", "KIRANDUL"], "JSW LTD": ["Nuagaon Iron Ore Mines", "Narayanposhi Iron Ore Mines"], "BIRLA CORPORATION LIMITED": ["Birla Cements Satna"], "GANPATI METAL MINING": ["MOIL"] };
-        const siteToFleet = { "Ambuja Darlaghat": ["DarlaT40"], "Wadi Cement Works": ["WadiSRD50", "WadiFRD50"], "Rabriyawas Cement Works": ["RbwsD50I", "RbwsD50II"], "Rajshree Cements": ["RjshreeROCL6", "RjshreeFRD50"], "Noamundi Iron Ore Mines": ["NoaD65I", "NoaD65II", "NoaD65III", "KTMD65I", "KTMD65II"], "Kotputli Cement Works": ["KotputliT40I", "KotputliT40II", "KotputliT40III"], "Manikgarh Cement Works": ["ManikgarhT40"], "Khondbond Iron Ore Mines": ["KhondbondD65", "KhondbondL8"], "Shella Lime Stone Quarry": ["LafargeD60", "LafargeT40"], "Bela Cement Works": ["BelaFRD50"], "Joda Iron Ore Mines": ["JodaD65I", "JodaD65II"], "Narayanposhi Iron Ore Mines": ["NposhiT45I", "NposhiT45II"], "Nuagaon Iron Ore Mines": ["NuagaonT45III"], "TSL West Bokaro Q-SE": ["BokaroD65I", "BokaroPRD50", "QSE-DM14", "QSE-DM15"], "TSL West Bokaro Q-AB": ["QAB-DM2K10", "QAB-DM2K11"], "Gagal Cement Works": ["GagalFRD50", "GagalT40"], "Kymore Cement Works": ["KymoreT40", "KymoreMGMFRD50", "KymoreBMGFRD50"], "Awarpur": ["AwarpurD50I"], "Kukurdih Cement Works": ["KukurdihT45I"], "Nathwara Cement Works": ["NathwaraT40I", "NathwaraT40II"], "Tadipatri Cement Works": ["TadipatriT45I"], "Rawan Cement Works": ["RawanD50I"], "Maihar Cement Works": ["MaiharT40I"], "Parsa Kenta Coal Mines": ["US091130"], "Birla Cements Satna": ["BirlaT40I"], "BACHELI": ["NMDCT45I", "NMDCT45III", "NMDCT45IV"], "KIRANDUL": ["NMDCT45II"], "MOIL": ["GanpatiT40I"] };
-
-        function updateSites() {
-            const customer = document.getElementById('customerSelect').value;
-            const siteSelect = document.getElementById('workSiteSelect');
-            const fleetSelect = document.getElementById('fleetSelect');
-            siteSelect.innerHTML = '<option value="">-- Select Site --</option>';
-            fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
-            if (customerToSites[customer]) {
-                customerToSites[customer].forEach(s => { let opt = document.createElement('option'); opt.value = opt.text = s; siteSelect.add(opt); });
-            }
-        }
-
-        function updateFleet() {
-            const site = document.getElementById('workSiteSelect').value;
-            const fleetSelect = document.getElementById('fleetSelect');
-            fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
-            if (siteToFleet[site]) {
-                siteToFleet[site].forEach(f => { let opt = document.createElement('option'); opt.value = opt.text = f; fleetSelect.add(opt); });
-            }
-        }
-
-        function checkValidation() {
-            const fields = [document.getElementById('customerSelect').value, document.getElementById('valDate').value, document.getElementById('valTech').value, document.getElementById('workSiteSelect').value, document.getElementById('fleetSelect').value, document.getElementById('valShift').value, document.getElementById('valEngTemp').value, document.getElementById('valEngOil').value];
-            document.getElementById('submitBtn').disabled = fields.some(v => !v || v.trim()==="");
-        }
-
-        document.getElementById('passInput').addEventListener('input', function() {
-            const match = this.value === passKey;
-            document.getElementById('protectedContent').classList.toggle('hidden', !match);
-            document.getElementById('formButtons').classList.toggle('hidden', !match);
-            document.getElementById('statusLabel').innerText = match ? "Unlocked" : "Locked";
-            document.getElementById('statusLabel').className = "status-tag " + (match ? "unlocked" : "locked");
-            checkValidation();
-        });
-
-        const form = document.getElementById('residencyForm');
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Processing..."; btn.disabled = true;
-            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(() => { showSuccess(); form.reset(); updateSites(); lockForm(); btn.innerText = "Submit Record"; })
-            .catch(() => { alert("Failed."); btn.disabled = false; btn.innerText = "Submit Record"; });
-        });
-        function lookupRecentData() {
-    const fleetId = document.getElementById('fleetSelect').value;
-    if (!fleetId) { alert("Please select a Fleet ID first"); return; }
-    
-    const btn = event.target;
-    btn.innerText = "Searching...";
-    
-    fetch(scriptURL + "?fleetId=" + encodeURIComponent(fleetId))
-    .then(response => response.json())
-    .then(data => {
-        if (data) {
-            // This logic maps the sheet row back to your form inputs
-            // We skip index 0,1,2 (Customer, Date, Tech) to keep the new entry fresh
-            const inputs = document.querySelectorAll('input[type="number"]');
-            inputs.forEach((input, index) => {
-                // Adjust index based on where your technical parameters start in the Sheet
-                if(data[index + 8]) input.value = data[index + 8]; 
-            });
-            alert("Latest data for " + fleetId + " loaded! You can now correct it and re-submit.");
-        } else {
-            alert("No previous data found for this Fleet ID.");
-        }
-        btn.innerText = "Fetch Last Entry for this Fleet";
-    });
-}
-
-        function showSuccess() {
-            const overlay = document.createElement('div');
-            overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:9999;";
-            overlay.innerHTML = '<div style="background:white;padding:30px;border-radius:10px;text-align:center;"><div style="color:#28a745;font-size:50px;">✔</div><h3>Data Captured!</h3><p>Record saved to Sheet.</p></div>';
-            document.body.appendChild(overlay);
-            setTimeout(() => { overlay.remove(); }, 3000);
-        }
-    </<script>
-    // Scrambled Security Layer
-    var _0x4f22=["\x45\x70\x69\x72\x6f\x63\x40\x31\x32\x33","\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x41\x4b\x66\x79\x63\x62\x7a\x6c\x58\x39\x6d\x6c\x39\x73\x5f\x52\x71\x31\x75\x54\x4c\x4a\x77\x56\x55\x34\x74\x39\x59\x51\x62\x4c\x75\x62\x4c\x4d\x31\x34\x4b\x59\x30\x75\x67\x69\x37\x33\x66\x4c\x79\x37\x55\x69\x38\x61\x70\x4e\x43\x69\x52\x6b\x72\x4d\x66\x51\x5f\x6c\x59\x52\x36\x4f\x6f\x32\x6f\x41\x2f\x65\x78\x65\x63"];
-    const scriptURL = _0x4f22[1];
-    const passKey = _0x4f22[0];
-
-    // Search Logic (Obfuscated)
+    // 2. Search / Lookup Function
     function lookupRecentData() {
-        var _0x3b2a=["\x76\x61\x6c\x75\x65","\x66\x6c\x65\x65\x74\x53\x65\x6c\x65\x63\x74","\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64","\x53\x65\x61\x72\x63\x68\x69\x6e\x67\x2e\x2e\x2e","\x69\x6e\x6e\x65\x72\x54\x65\x78\x74"];const fId=document[_0x3b2a[2]](_0x3b2a[1])[_0x3b2a[0]];if(!fId){alert("Please select Fleet ID");return}const btn=event.target;const oldT=btn[_0x3b2a[4]];btn[_0x3b2a[4]]=_0x3b2a[3];
-        fetch(scriptURL+"?fleetId="+encodeURIComponent(fId)).then(r=>r.json()).then(d=>{
-            if(d&&d.length>0){
-                const ins=document.querySelectorAll('input[type="number"]');
-                ins.forEach((n,i)=>{if(d[i+8]!==undefined&&d[i+8]!==""){n.value=d[i+8]}});
-                alert("Last data loaded for "+fId);
-            }else{alert("No data found")}
-        }).finally(()=>{btn[_0x3b2a[4]]=oldT});
+        const fleetId = document.getElementById('fleetSelect').value;
+        if (!fleetId) { alert("Please select a Fleet ID first"); return; }
+        
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = "Searching...";
+        btn.disabled = true;
+        
+        fetch(scriptURL + "?fleetId=" + encodeURIComponent(fleetId))
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.length > 0) {
+                const inputs = document.querySelectorAll('input[type="number"]');
+                inputs.forEach((input, index) => {
+                    // Mapping starts at Column J (Index 9) based on your new sheet layout
+                    if(data[index + 9] !== undefined && data[index + 9] !== "") {
+                        input.value = data[index + 9];
+                    }
+                });
+                alert("Success! Last known data for " + fleetId + " loaded.");
+            } else {
+                alert("No previous data found for " + fleetId);
+            }
+        })
+        .catch(err => {
+            alert("Search failed. Ensure Google Script is set to 'Anyone'.");
+        })
+        .finally(() => {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        });
     }
 
-    // --- Keep your existing Customer/Site dropdown logic below this line ---
+    // 3. Dropdown Logic & Form Security
     const customerToSites = { "TATA STEEL LTD": ["Noamundi Iron Ore Mines", "Khondbond Iron Ore Mines", "TSL West Bokaro Q-SE", "TSL West Bokaro Q-AB", "Joda Iron Ore Mines"], "ULTRATECH LTD": ["Rajshree Cements", "Kotputli Cement Works", "Manikgarh Cement Works", "Bela Cement Works", "Awarpur", "Kukurdih Cement Works", "Nathwara Cement Works", "Tadipatri Cement Works", "Rawan Cement Works", "Maihar Cement Works"], "AMBUJA CEMENTS LTD": ["Ambuja Darlaghat", "Rabriyawas Cement Works"], "LAFARGE": ["Shella Lime Stone Quarry"], "ACC LTD": ["Wadi Cement Works", "Gagal Cement Works", "Kymore Cement Works"], "ADANI ENTERPRISES": ["Parsa Kenta Coal Mines"], "NMDC LTD": ["BACHELI", "KIRANDUL"], "JSW LTD": ["Nuagaon Iron Ore Mines", "Narayanposhi Iron Ore Mines"], "BIRLA CORPORATION LIMITED": ["Birla Cements Satna"], "GANPATI METAL MINING": ["MOIL"] };
     const siteToFleet = { "Ambuja Darlaghat": ["DarlaT40"], "Wadi Cement Works": ["WadiSRD50", "WadiFRD50"], "Rabriyawas Cement Works": ["RbwsD50I", "RbwsD50II"], "Rajshree Cements": ["RjshreeROCL6", "RjshreeFRD50"], "Noamundi Iron Ore Mines": ["NoaD65I", "NoaD65II", "NoaD65III", "KTMD65I", "KTMD65II"], "Kotputli Cement Works": ["KotputliT40I", "KotputliT40II", "KotputliT40III"], "Manikgarh Cement Works": ["ManikgarhT40"], "Khondbond Iron Ore Mines": ["KhondbondD65", "KhondbondL8"], "Shella Lime Stone Quarry": ["LafargeD60", "LafargeT40"], "Bela Cement Works": ["BelaFRD50"], "Joda Iron Ore Mines": ["JodaD65I", "JodaD65II"], "Narayanposhi Iron Ore Mines": ["NposhiT45I", "NposhiT45II"], "Nuagaon Iron Ore Mines": ["NuagaonT45III"], "TSL West Bokaro Q-SE": ["BokaroD65I", "BokaroPRD50", "QSE-DM14", "QSE-DM15"], "TSL West Bokaro Q-AB": ["QAB-DM2K10", "QAB-DM2K11"], "Gagal Cement Works": ["GagalFRD50", "GagalT40"], "Kymore Cement Works": ["KymoreT40", "KymoreMGMFRD50", "KymoreBMGFRD50"], "Awarpur": ["AwarpurD50I"], "Kukurdih Cement Works": ["KukurdihT45I"], "Nathwara Cement Works": ["NathwaraT40I", "NathwaraT40II"], "Tadipatri Cement Works": ["TadipatriT45I"], "Rawan Cement Works": ["RawanD50I"], "Maihar Cement Works": ["MaiharT40I"], "Parsa Kenta Coal Mines": ["US091130"], "Birla Cements Satna": ["BirlaT40I"], "BACHELI": ["NMDCT45I", "NMDCT45III", "NMDCT45IV"], "KIRANDUL": ["NMDCT45II"], "MOIL": ["GanpatiT40I"] };
 
@@ -259,7 +182,7 @@
         btn.innerText = "Processing..."; btn.disabled = true;
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
         .then(() => { showSuccess(); form.reset(); updateSites(); btn.innerText = "Submit Record"; })
-        .catch(() => { alert("Failed."); btn.disabled = false; btn.innerText = "Submit Record"; });
+        .catch(() => { alert("Submission Failed."); btn.disabled = false; btn.innerText = "Submit Record"; });
     });
 
     function showSuccess() {
@@ -269,8 +192,9 @@
         document.body.appendChild(overlay);
         setTimeout(() => { overlay.remove(); }, 3000);
     }
-</script>>
+</script>
 </body>
 </html>
+
 
 
