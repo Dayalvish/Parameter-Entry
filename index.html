@@ -118,7 +118,7 @@
             if (data && data.length > 0) {
                 const inputs = document.querySelectorAll('input[type="number"]');
                 inputs.forEach((input, index) => {
-                    // Mapping starts at Column J (Index 8) based on your new sheet layout
+                    // Mapping starts at Column I (Index 8) based on your new sheet layout
                     if(data[index + 8] !== undefined && data[index + 8] !== "") {
                         input.value = data[index + 8];
                     }
@@ -195,6 +195,7 @@
 </script>
 </body>
 </html>
+
 
 
 
