@@ -45,6 +45,12 @@
                 <tbody id="protectedContent" class="hidden">
                     <tr><td class="label-cell">Work Site <span class="required-star">*</span></td><td><select id="workSiteSelect" name="Work Site" onchange="updateFleet(); checkValidation();"><option value="">-- Select Site --</option></select></td></tr>
                     <tr><td class="label-cell">Fleet ID <span class="required-star">*</span></td><td><select id="fleetSelect" name="Fleet ID" onchange="checkValidation()"><option value="">-- Select Fleet --</option></select></td></tr>
+                    <tr>
+    <td class="label-cell">Recent Entry Lookup</td>
+    <td>
+        <button type="button" onclick="lookupRecentData()" style="background:#007bff; color:white; width:100%;">Fetch Last Entry for this Fleet</button>
+    </td>
+</tr>
                     <tr><td class="label-cell">Shift <span class="required-star">*</span></td><td><select name="Shift" id="valShift" onchange="checkValidation()"><option value="">-- Select Shift --</option><option>Shift A</option><option>Shift B</option><option>Shift C</option><option>G Shift</option></select></td></tr>
                     
                     <tr><td class="label-cell">Rotation Pressure</td><td><input type="number" step="any" name="Rotation Pressure"></td></tr>
@@ -157,6 +163,31 @@
             .then(() => { showSuccess(); form.reset(); updateSites(); lockForm(); btn.innerText = "Submit Record"; })
             .catch(() => { alert("Failed."); btn.disabled = false; btn.innerText = "Submit Record"; });
         });
+        function lookupRecentData() {
+    const fleetId = document.getElementById('fleetSelect').value;
+    if (!fleetId) { alert("Please select a Fleet ID first"); return; }
+    
+    const btn = event.target;
+    btn.innerText = "Searching...";
+    
+    fetch(scriptURL + "?fleetId=" + encodeURIComponent(fleetId))
+    .then(response => response.json())
+    .then(data => {
+        if (data) {
+            // This logic maps the sheet row back to your form inputs
+            // We skip index 0,1,2 (Customer, Date, Tech) to keep the new entry fresh
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach((input, index) => {
+                // Adjust index based on where your technical parameters start in the Sheet
+                if(data[index + 8]) input.value = data[index + 8]; 
+            });
+            alert("Latest data for " + fleetId + " loaded! You can now correct it and re-submit.");
+        } else {
+            alert("No previous data found for this Fleet ID.");
+        }
+        btn.innerText = "Fetch Last Entry for this Fleet";
+    });
+}
 
         function showSuccess() {
             const overlay = document.createElement('div');
@@ -168,3 +199,4 @@
     </script>
 </body>
 </html>
+
