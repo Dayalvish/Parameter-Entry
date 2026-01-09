@@ -33,7 +33,7 @@
 
     <div class="header-section">
         <img src="Picture1.png" alt="Epiroc Logo" class="brand-logo" onerror="this.style.display='none'">
-        <h2>EPIROC FLEET PARAMETER ENTRY FORM</h2>
+        <h2>Epiroc Contract Fleet Parameter Data Entry Form</h2>
     </div>
 
     <form id="residencyForm">
@@ -158,5 +158,69 @@
 
         function updateSites() {
             const customer = document.getElementById('customerSelect').value;
+            const siteSelect = document.getElementById('workSiteSelect');
+            const fleetSelect = document.getElementById('fleetSelect');
+            siteSelect.innerHTML = '<option value="">-- Select Work Site --</option>';
+            fleetSelect.innerHTML = '<option value="">-- Select Work Site First --</option>';
+            if (customerToSites[customer]) {
+                customerToSites[customer].forEach(site => {
+                    let opt = document.createElement('option'); opt.value = opt.text = site; siteSelect.add(opt);
+                });
+            }
+        }
 
-            const siteSelect = document.getElementById
+        function updateFleet() {
+            const site = document.getElementById('workSiteSelect').value;
+            const fleetSelect = document.getElementById('fleetSelect');
+            fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
+            if (siteToFleet[site]) {
+                siteToFleet[site].forEach(fleet => {
+                    let opt = document.createElement('option'); opt.value = opt.text = fleet; fleetSelect.add(opt);
+                });
+            }
+        }
+
+        function checkValidation() {
+            const mandatoryFields = [
+                document.getElementById('customerSelect').value,
+                document.getElementById('valDate').value,
+                document.getElementById('valTech').value,
+                document.getElementById('workSiteSelect').value,
+                document.getElementById('fleetSelect').value,
+                document.getElementById('valShift').value,
+                document.getElementById('valEngTemp').value,
+                document.getElementById('valEngOil').value
+            ];
+            document.getElementById('submitBtn').disabled = mandatoryFields.some(val => !val || val.trim() === "");
+        }
+
+        document.getElementById('passInput').addEventListener('input', function() {
+            const isMatch = this.value === passKey;
+            document.getElementById('protectedContent').classList.toggle('hidden', !isMatch);
+            document.getElementById('formButtons').classList.toggle('hidden', !isMatch);
+            document.getElementById('statusLabel').innerText = isMatch ? "Unlocked" : "Locked";
+            document.getElementById('statusLabel').className = "status-tag " + (isMatch ? "unlocked" : "locked");
+            checkValidation();
+        });
+
+        const form = document.getElementById('residencyForm');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Submitting..."; btn.disabled = true;
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(() => {
+                alert("Success! Record submitted.");
+                form.reset(); updateSites();
+                lockForm();
+                btn.innerText = "Submit Record";
+            })
+            .catch(() => {
+                alert("Submission failed. Check connection.");
+                btn.disabled = false; btn.innerText = "Submit Record";
+            });
+        });
+    </script>
+</body>
+</html>
