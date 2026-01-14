@@ -3,97 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EPIROC FLEET PARAMETER ENTRY FORM</title>
+    <title>EPIROC FLEET PARAMETER ENTRY</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 20px; margin: 0; }
-        .header-section { max-width: 700px; margin: 0 auto 10px auto; display: flex; flex-direction: column; align-items: flex-start; }
-        .brand-logo { max-width: 160px; height: auto; margin-bottom: 10px; }
-        h2 { margin: 0; font-size: 20px; color: #333; width: 100%; text-align: center; padding-bottom: 15px; }
+        .header-section { max-width: 700px; margin: 0 auto 10px auto; text-align: center; }
+        .brand-logo { max-width: 160px; height: auto; }
+        h2 { font-size: 20px; color: #333; border-bottom: 2px solid #FFD700; padding-bottom: 10px; }
         .sheet-container { background: white; border: 1px solid #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 700px; margin: 0 auto; border-radius: 8px; overflow: hidden; }
         table { border-collapse: collapse; width: 100%; }
         td { border: 1px solid #dfe3e8; padding: 12px; font-size: 14px; }
-        tr:nth-child(odd) .label-cell { background-color: #FFD700 !important; color: #000 !important; font-weight: bold; width: 45%; }
-        tr:nth-child(even) .label-cell { background-color: #555555 !important; color: #ffffff !important; font-weight: bold; width: 45%; }
-        input, select { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+        tr:nth-child(odd) .label-cell { background-color: #FFD700; font-weight: bold; width: 45%; }
+        tr:nth-child(even) .label-cell { background-color: #555; color: white; font-weight: bold; width: 45%; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; }
         .hidden { display: none !important; }
         .status-tag { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
         .locked { background: #f8d7da; color: #721c24; }
         .unlocked { background: #d4edda; color: #155724; }
-        .required-star { color: #dc3545; }
-        .sync-msg { font-size: 11px; color: #007bff; font-weight: bold; margin-top: 5px; display: block; }
-        .btn-submit { background-color: #28a745; color: white; width: 100%; padding: 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-submit { background-color: #28a745; color: white; width: 100%; padding: 15px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-submit:disabled { background-color: #ccc; }
+        .sync-btn { background:#007bff; color:white; width:100%; margin-top:5px; border:none; padding:8px; border-radius:4px; cursor:pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header-section">
-        <img src="Picture1.png" alt="Epiroc Logo" class="brand-logo" onerror="this.style.display='none'">
-        <h2>EPIROC FLEET PARAMETER ENTRY FORM</h2>
-    </div>
-
-    <form id="residencyForm">
-        <div class="sheet-container">
-            <table>
-                <tr><td class="label-cell">Customer Name <span class="required-star">*</span></td><td><select id="customerSelect" name="Customer Name" onchange="updateSites(); checkValidation();" required><option value="">-- Select --</option><option value="TATA STEEL LTD">TATA STEEL LTD</option><option value="ULTRATECH LTD">ULTRATECH LTD</option><option value="AMBUJA CEMENTS LTD">AMBUJA CEMENTS LTD</option><option value="ACC LTD">ACC LTD</option><option value="LAFARGE">LAFARGE</option><option value="JSW LTD">JSW LTD</option><option value="ADANI ENTERPRISES">ADANI ENTERPRISES</option><option value="NMDC LTD">NMDC LTD</option><option value="BIRLA CORPORATION LIMITED">BIRLA CORPORATION LIMITED</option><option value="GANPATI METAL MINING">GANPATI METAL MINING</option></select></td></tr>
-                <tr><td class="label-cell">Date <span class="required-star">*</span></td><td><input type="date" name="Date" id="valDate" oninput="checkValidation()" required></td></tr>
-                <tr><td class="label-cell">Technician Name <span class="required-star">*</span></td><td><input type="text" name="Technician Name" id="valTech" oninput="checkValidation()" required></td></tr>
-                <tr><td class="label-cell">Unlock Password</td><td><input type="password" id="passInput" placeholder="Enter password"></td></tr>
-                <tr><td class="label-cell">Status</td><td><span id="statusLabel" class="status-tag locked">Locked</span></td></tr>
-
-                <tbody id="protectedContent" class="hidden">
-                    <tr><td class="label-cell">Work Site <span class="required-star">*</span></td><td><select id="workSiteSelect" name="Work Site" onchange="updateFleet(); checkValidation();"><option value="">-- Select Site --</option></select></td></tr>
-                    <tr><td class="label-cell">Fleet ID <span class="required-star">*</span></td><td>
-                        <select id="fleetSelect" name="Fleet ID" onchange="checkValidation()"><option value="">-- Select Fleet --</option></select>
-                        <button type="button" onclick="lookupRecentData()" style="background:#007bff; color:white; width:100%; margin-top:10px; border:none; padding:8px; border-radius:4px; cursor:pointer;">Fetch Last Entry for this Fleet</button>
-                        <span id="syncStatus" class="sync-msg"></span>
-                    </td></tr>
-                    <tr><td class="label-cell">Shift <span class="required-star">*</span></td><td><select name="Shift" id="valShift" onchange="checkValidation()"><option value="">-- Select Shift --</option><option>Shift A</option><option>Shift B</option><option>Shift C</option><option>G Shift</option></select></td></tr>
-                    
-                    <tr><td class="label-cell">Rotation Pressure</td><td><input type="number" step="any" name="Rotation Pressure" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Rotation RPM (Smartroc & PV)</td><td><input type="number" step="any" name="Rotation RPM (Smartroc & PV)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Receiver Pr NoLoad (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr NoLoad (DTH & DS)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Receiver Pr Unload (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr Unload (DTH & DS)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Receiver Pr Load (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr Load (DTH & DS)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Reduced Air pressure (DTH)</td><td><input type="number" step="any" name="Reduced Air pressure (DTH)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Full Air Set Pr (DTH)</td><td><input type="number" step="any" name="Full Air Set Pr (DTH)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Low Impact (Top Hammer)</td><td><input type="number" step="any" name="Low Impact (Top Hammer)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Air Pressure Full</td><td><input type="number" step="any" name="Air Pressure Full" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Interstage Pr Load (DTH)</td><td><input type="number" step="any" name="Interstage Pr Load (DTH)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Feed Pr Low Impact</td><td><input type="number" step="any" name="Feed Pr Low Impact" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Feed Pr High Impact</td><td><input type="number" step="any" name="Feed Pr High Impact" class="param-input"></td></tr>
-                    <tr><td class="label-cell">HECL pr High Impact</td><td><input type="number" step="any" name="HECL pr High Impact" class="param-input"></td></tr>
-                    <tr><td class="label-cell">DCT (%)</td><td><input type="number" step="any" name="DCT (%)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Water injection (%)</td><td><input type="number" step="any" name="Water injection (%)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Compressor Load (Smartroc & PV)</td><td><input type="number" step="any" name="Compressor Load (Smartroc & PV)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Engine RPM Drilling</td><td><input type="number" step="any" name="Engine RPM Drilling" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Engine Temp <span class="required-star">*</span></td><td><input type="number" step="any" name="Engine Temp" id="valEngTemp" oninput="checkValidation()" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Hyd-Oil Temp</td><td><input type="number" step="any" name="Hyd-Oil Temp" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Ambient Temp</td><td><input type="number" step="any" name="Ambient Temp" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Engine load Drilling</td><td><input type="number" step="any" name="Engine load Drilling" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Boost Pressure</td><td><input type="number" step="any" name="Boost Pressure" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Engine oil pressure <span class="required-star">*</span></td><td><input type="number" step="any" name="Engine oil pressure" id="valEngOil" oninput="checkValidation()" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Air intake temp</td><td><input type="number" step="any" name="Air intake temp" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Compressor Temp (L & DS)</td><td><input type="number" step="any" name="Compressor Temp (L & DS)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Compressor Temp (H) (DTH)</td><td><input type="number" step="any" name="Compressor Temp (H) (DTH)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Charging Voltage</td><td><input type="number" step="any" name="Charging Voltage" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Fuel Pressure</td><td><input type="number" step="any" name="Fuel Pressure" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Tramming</td><td><input type="number" step="any" name="Tramming" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Y193 Inlet Pressure (Smartroc)</td><td><input type="number" step="any" name="Y193 Inlet Pressure (Smartroc)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">High Impact (Top Hammer)</td><td><input type="number" step="any" name="High Impact (Top Hammer)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Damper Pressure High (Top Hammer)</td><td><input type="number" step="any" name="Damper Pressure High (Top Hammer)" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Feed Pr Coupling</td><td><input type="number" step="any" name="Feed Pr Coupling" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Feed Pr Uncoupling</td><td><input type="number" step="any" name="Feed Pr Uncoupling" class="param-input"></td></tr>
-                    <tr><td class="label-cell">Rotation Pr Rod To Rod</td><td><input type="number" step="any" name="Rotation Pr Rod To Rod" class="param-input"></td></tr>
-                </tbody>
-            </table>
-            
-            <div class="hidden" id="formButtons" style="padding: 20px;">
-                <button type="submit" id="submitBtn" class="btn-submit" disabled>Submit Record</button>
-            </div>
-        </div>
-    </form>
-
-    <script>
+<script>
+    // These are now in a protected script block at the top
     const scriptURL = "https://script.google.com/macros/s/AKfycbxGjuSg-wSQuGPalMa6VIIqhj9DYVN53a9TN8o0qiZiAFo8oBaAIJLVZrKL9rC-DCvINQ/exec";
     const passKey = "Epiroc@123";
 
@@ -101,41 +35,110 @@
         const fId = document.getElementById('fleetSelect').value;
         const date = document.getElementById('valDate').value;
         const status = document.getElementById('syncStatus');
-        if (!fId || !date) { alert("Select Date and Fleet ID first"); return; }
-        status.innerText = "⏳ Searching Base Sheet...";
+        if (!fId || !date) { alert("Select Date & Fleet first"); return; }
+        
+        status.innerText = "⏳ Searching...";
         try {
-            const response = await fetch(`${scriptURL}?get=previousData&fleet=${encodeURIComponent(fId)}&date=${date}`);
-            const result = await response.json();
-            if (!result.error) {
-                document.querySelectorAll('.param-input').forEach(input => {
-                    if (result[input.name] !== undefined) input.value = result[input.name];
+            const r = await fetch(`${scriptURL}?get=previousData&fleet=${encodeURIComponent(fId)}&date=${date}`);
+            const d = await r.json();
+            if (d && !d.error) {
+                document.querySelectorAll('.param-input').forEach(i => {
+                    if (d[i.name] !== undefined) i.value = d[i.name];
                 });
-                status.innerText = "✅ record restored";
-            } else { status.innerText = "ℹ️ No record found for this machine on this date."; }
-        } catch (e) { status.innerText = "⚠️ Connection error."; }
+                status.innerText = "✅ Restored";
+            } else {
+                status.innerText = "ℹ️ No record found";
+            }
+        } catch (e) {
+            status.innerText = "⚠️ Error";
+        }
     }
+</script>
 
+<div class="header-section">
+    <img src="Picture1.png" alt="Logo" class="brand-logo">
+    <h2>EPIROC FLEET PARAMETER ENTRY FORM</h2>
+</div>
+
+<form id="residencyForm">
+    <div class="sheet-container">
+        <table>
+            <tr><td class="label-cell">Customer Name *</td><td><select id="customerSelect" name="Customer Name" onchange="updateSites(); checkValidation();" required><option value="">-- Select --</option><option value="TATA STEEL LTD">TATA STEEL LTD</option><option value="ULTRATECH LTD">ULTRATECH LTD</option><option value="AMBUJA CEMENTS LTD">AMBUJA CEMENTS LTD</option><option value="ACC LTD">ACC LTD</option><option value="LAFARGE">LAFARGE</option><option value="JSW LTD">JSW LTD</option><option value="ADANI ENTERPRISES">ADANI ENTERPRISES</option><option value="NMDC LTD">NMDC LTD</option><option value="BIRLA CORPORATION LIMITED">BIRLA CORPORATION LIMITED</option><option value="GANPATI METAL MINING">GANPATI METAL MINING</option></select></td></tr>
+            <tr><td class="label-cell">Date *</td><td><input type="date" name="Date" id="valDate" oninput="checkValidation()" required></td></tr>
+            <tr><td class="label-cell">Technician Name *</td><td><input type="text" name="Technician Name" id="valTech" oninput="checkValidation()" required></td></tr>
+            <tr><td class="label-cell">Unlock Password</td><td><input type="password" id="passInput" placeholder="Password"></td></tr>
+            <tr><td class="label-cell">Status</td><td><span id="statusLabel" class="status-tag locked">Locked</span></td></tr>
+
+            <tbody id="protectedContent" class="hidden">
+                <tr><td class="label-cell">Work Site *</td><td><select id="workSiteSelect" name="Work Site" onchange="updateFleet(); checkValidation();"><option value="">-- Select Site --</option></select></td></tr>
+                <tr><td class="label-cell">Fleet ID *</td><td>
+                    <select id="fleetSelect" name="Fleet ID" onchange="checkValidation()"><option value="">-- Select Fleet --</option></select>
+                    <button type="button" class="sync-btn" onclick="lookupRecentData()">Fetch Last Entry</button>
+                    <span id="syncStatus" style="font-size:11px; color:#007bff;"></span>
+                </td></tr>
+                <tr><td class="label-cell">Shift *</td><td><select name="Shift" id="valShift" onchange="checkValidation()"><option value="">-- Select Shift --</option><option>Shift A</option><option>Shift B</option><option>Shift C</option><option>G Shift</option></select></td></tr>
+                
+                <tr><td class="label-cell">Rotation Pressure</td><td><input type="number" step="any" name="Rotation Pressure" class="param-input"></td></tr>
+                <tr><td class="label-cell">Rotation RPM (Smartroc & PV)</td><td><input type="number" step="any" name="Rotation RPM (Smartroc & PV)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Receiver Pr NoLoad (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr NoLoad (DTH & DS)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Receiver Pr Unload (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr Unload (DTH & DS)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Receiver Pr Load (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr Load (DTH & DS)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Reduced Air pressure (DTH)</td><td><input type="number" step="any" name="Reduced Air pressure (DTH)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Full Air Set Pr (DTH)</td><td><input type="number" step="any" name="Full Air Set Pr (DTH)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Low Impact (Top Hammer)</td><td><input type="number" step="any" name="Low Impact (Top Hammer)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Air Pressure Full</td><td><input type="number" step="any" name="Air Pressure Full" class="param-input"></td></tr>
+                <tr><td class="label-cell">Interstage Pr Load (DTH)</td><td><input type="number" step="any" name="Interstage Pr Load (DTH)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Feed Pr Low Impact</td><td><input type="number" step="any" name="Feed Pr Low Impact" class="param-input"></td></tr>
+                <tr><td class="label-cell">Feed Pr High Impact</td><td><input type="number" step="any" name="Feed Pr High Impact" class="param-input"></td></tr>
+                <tr><td class="label-cell">HECL pr High Impact</td><td><input type="number" step="any" name="HECL pr High Impact" class="param-input"></td></tr>
+                <tr><td class="label-cell">DCT (%)</td><td><input type="number" step="any" name="DCT (%)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Water injection (%)</td><td><input type="number" step="any" name="Water injection (%)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Compressor Load (Smartroc & PV)</td><td><input type="number" step="any" name="Compressor Load (Smartroc & PV)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Engine RPM Drilling</td><td><input type="number" step="any" name="Engine RPM Drilling" class="param-input"></td></tr>
+                <tr><td class="label-cell">Engine Temp *</td><td><input type="number" step="any" name="Engine Temp" id="valEngTemp" oninput="checkValidation()" class="param-input"></td></tr>
+                <tr><td class="label-cell">Hyd-Oil Temp</td><td><input type="number" step="any" name="Hyd-Oil Temp" class="param-input"></td></tr>
+                <tr><td class="label-cell">Ambient Temp</td><td><input type="number" step="any" name="Ambient Temp" class="param-input"></td></tr>
+                <tr><td class="label-cell">Engine load Drilling</td><td><input type="number" step="any" name="Engine load Drilling" class="param-input"></td></tr>
+                <tr><td class="label-cell">Boost Pressure</td><td><input type="number" step="any" name="Boost Pressure" class="param-input"></td></tr>
+                <tr><td class="label-cell">Engine oil pressure *</td><td><input type="number" step="any" name="Engine oil pressure" id="valEngOil" oninput="checkValidation()" class="param-input"></td></tr>
+                <tr><td class="label-cell">Air intake temp</td><td><input type="number" step="any" name="Air intake temp" class="param-input"></td></tr>
+                <tr><td class="label-cell">Compressor Temp (L & DS)</td><td><input type="number" step="any" name="Compressor Temp (L & DS)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Compressor Temp (H) (DTH)</td><td><input type="number" step="any" name="Compressor Temp (H) (DTH)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Charging Voltage</td><td><input type="number" step="any" name="Charging Voltage" class="param-input"></td></tr>
+                <tr><td class="label-cell">Fuel Pressure</td><td><input type="number" step="any" name="Fuel Pressure" class="param-input"></td></tr>
+                <tr><td class="label-cell">Tramming</td><td><input type="number" step="any" name="Tramming" class="param-input"></td></tr>
+                <tr><td class="label-cell">Y193 Inlet Pressure (Smartroc)</td><td><input type="number" step="any" name="Y193 Inlet Pressure (Smartroc)" class="param-input"></td></tr>
+                <tr><td class="label-cell">High Impact (Top Hammer)</td><td><input type="number" step="any" name="High Impact (Top Hammer)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Damper Pressure High (Top Hammer)</td><td><input type="number" step="any" name="Damper Pressure High (Top Hammer)" class="param-input"></td></tr>
+                <tr><td class="label-cell">Feed Pr Coupling</td><td><input type="number" step="any" name="Feed Pr Coupling" class="param-input"></td></tr>
+                <tr><td class="label-cell">Feed Pr Uncoupling</td><td><input type="number" step="any" name="Feed Pr Uncoupling" class="param-input"></td></tr>
+                <tr><td class="label-cell">Rotation Pr Rod To Rod</td><td><input type="number" step="any" name="Rotation Pr Rod To Rod" class="param-input"></td></tr>
+            </tbody>
+        </table>
+        
+        <div class="hidden" id="formButtons" style="padding: 20px;">
+            <button type="submit" id="submitBtn" class="btn-submit" disabled>Submit Record</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    // Mapping Data
     const customerToSites = { "TATA STEEL LTD": ["Noamundi Iron Ore Mines", "Khondbond Iron Ore Mines", "TSL West Bokaro Q-SE", "TSL West Bokaro Q-AB", "Joda Iron Ore Mines"], "ULTRATECH LTD": ["Rajshree Cements", "Kotputli Cement Works", "Manikgarh Cement Works", "Bela Cement Works", "Awarpur", "Kukurdih Cement Works", "Nathwara Cement Works", "Tadipatri Cement Works", "Rawan Cement Works", "Maihar Cement Works"], "AMBUJA CEMENTS LTD": ["Ambuja Darlaghat", "Rabriyawas Cement Works"], "LAFARGE": ["Shella Lime Stone Quarry"], "ACC LTD": ["Wadi Cement Works", "Gagal Cement Works", "Kymore Cement Works"], "ADANI ENTERPRISES": ["Parsa Kenta Coal Mines"], "NMDC LTD": ["BACHELI", "KIRANDUL"], "JSW LTD": ["Nuagaon Iron Ore Mines", "Narayanposhi Iron Ore Mines"], "BIRLA CORPORATION LIMITED": ["Birla Cements Satna"], "GANPATI METAL MINING": ["MOIL"] };
     const siteToFleet = { "Ambuja Darlaghat": ["DarlaT40"], "Wadi Cement Works": ["WadiSRD50", "WadiFRD50"], "Rabriyawas Cement Works": ["RbwsD50I", "RbwsD50II"], "Rajshree Cements": ["RjshreeROCL6", "RjshreeFRD50"], "Noamundi Iron Ore Mines": ["NoaD65I", "NoaD65II", "NoaD65III", "KTMD65I", "KTMD65II"], "Kotputli Cement Works": ["KotputliT40I", "KotputliT40II", "KotputliT40III"], "Manikgarh Cement Works": ["ManikgarhT40"], "Khondbond Iron Ore Mines": ["KhondbondD65", "KhondbondL8"], "Shella Lime Stone Quarry": ["LafargeD60", "LafargeT40"], "Bela Cement Works": ["BelaFRD50"], "Joda Iron Ore Mines": ["JodaD65I", "JodaD65II"], "Narayanposhi Iron Ore Mines": ["NposhiT45I", "NposhiT45II"], "Nuagaon Iron Ore Mines": ["NuagaonT45III"], "TSL West Bokaro Q-SE": ["BokaroD65I", "BokaroPRD50", "QSE-DM14", "QSE-DM15"], "TSL West Bokaro Q-AB": ["QAB-DM2K10", "QAB-DM2K11"], "Gagal Cement Works": ["GagalFRD50", "GagalT40"], "Kymore Cement Works": ["KymoreT40", "KymoreMGMFRD50", "KymoreBMGFRD50"], "Awarpur": ["AwarpurD50I"], "Kukurdih Cement Works": ["KukurdihT45I"], "Nathwara Cement Works": ["NathwaraT40I", "NathwaraT40II"], "Tadipatri Cement Works": ["TadipatriT45I"], "Rawan Cement Works": ["RawanD50I"], "Maihar Cement Works": ["MaiharT40I"], "Parsa Kenta Coal Mines": ["US091130"], "Birla Cements Satna": ["BirlaT40I"], "BACHELI": ["NMDCT45I", "NMDCT45III", "NMDCT45IV"], "KIRANDUL": ["NMDCT45II"], "MOIL": ["GanpatiT40I"] };
 
     function updateSites() {
-        const customer = document.getElementById('customerSelect').value;
-        const siteSelect = document.getElementById('workSiteSelect');
-        const fleetSelect = document.getElementById('fleetSelect');
-        siteSelect.innerHTML = '<option value="">-- Select Site --</option>';
-        fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
-        if (customerToSites[customer]) {
-            customerToSites[customer].forEach(s => { let opt = document.createElement('option'); opt.value = opt.text = s; siteSelect.add(opt); });
-        }
+        const c = document.getElementById('customerSelect').value;
+        const s = document.getElementById('workSiteSelect');
+        s.innerHTML = '<option value="">-- Select Site --</option>';
+        if (customerToSites[c]) { customerToSites[c].forEach(x => { let o = document.createElement('option'); o.value = o.text = x; s.add(o); }); }
     }
 
     function updateFleet() {
-        const site = document.getElementById('workSiteSelect').value;
-        const fleetSelect = document.getElementById('fleetSelect');
-        fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
-        if (siteToFleet[site]) {
-            siteToFleet[site].forEach(f => { let opt = document.createElement('option'); opt.value = opt.text = f; fleetSelect.add(opt); });
-        }
+        const s = document.getElementById('workSiteSelect').value;
+        const f = document.getElementById('fleetSelect');
+        f.innerHTML = '<option value="">-- Select Fleet --</option>';
+        if (siteToFleet[s]) { siteToFleet[s].forEach(x => { let o = document.createElement('option'); o.value = o.text = x; f.add(o); }); }
     }
 
     function checkValidation() {
@@ -159,6 +162,6 @@
         .then(() => { alert("Success!"); location.reload(); })
         .catch(() => { alert("Failed."); btn.disabled = false; });
     });
-    </script>
+</script>
 </body>
 </html>
