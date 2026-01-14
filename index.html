@@ -22,7 +22,6 @@
         .required-star { color: #dc3545; }
         .sync-msg { font-size: 11px; color: #007bff; font-weight: bold; margin-top: 5px; display: block; }
         .btn-submit { background-color: #28a745; color: white; width: 100%; padding: 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-submit:disabled { background-color: #ccc; }
     </style>
 </head>
 <body>
@@ -85,7 +84,7 @@
                     <tr><td class="label-cell">Feed Pr Coupling</td><td><input type="number" step="any" name="Feed Pr Coupling" class="param-input"></td></tr>
                     <tr><td class="label-cell">Feed Pr Uncoupling</td><td><input type="number" step="any" name="Feed Pr Uncoupling" class="param-input"></td></tr>
                     <tr><td class="label-cell">Rotation Pr Rod To Rod</td><td><input type="number" step="any" name="Rotation Pr Rod To Rod" class="param-input"></td></tr>
-                    </tbody>
+                </tbody>
             </table>
             
             <div class="hidden" id="formButtons" style="padding: 20px;">
@@ -111,9 +110,9 @@
                 document.querySelectorAll('.param-input').forEach(input => {
                     if (result[input.name] !== undefined) input.value = result[input.name];
                 });
-                status.innerText = "✅ Record restored";
+                status.innerText = "✅ record restored";
             } else { status.innerText = "ℹ️ No record found for this machine on this date."; }
-        } catch (e) { status.innerText = "⚠️ Error fetching data."; }
+        } catch (e) { status.innerText = "⚠️ Connection error."; }
     }
 
     const customerToSites = { "TATA STEEL LTD": ["Noamundi Iron Ore Mines", "Khondbond Iron Ore Mines", "TSL West Bokaro Q-SE", "TSL West Bokaro Q-AB", "Joda Iron Ore Mines"], "ULTRATECH LTD": ["Rajshree Cements", "Kotputli Cement Works", "Manikgarh Cement Works", "Bela Cement Works", "Awarpur", "Kukurdih Cement Works", "Nathwara Cement Works", "Tadipatri Cement Works", "Rawan Cement Works", "Maihar Cement Works"], "AMBUJA CEMENTS LTD": ["Ambuja Darlaghat", "Rabriyawas Cement Works"], "LAFARGE": ["Shella Lime Stone Quarry"], "ACC LTD": ["Wadi Cement Works", "Gagal Cement Works", "Kymore Cement Works"], "ADANI ENTERPRISES": ["Parsa Kenta Coal Mines"], "NMDC LTD": ["BACHELI", "KIRANDUL"], "JSW LTD": ["Nuagaon Iron Ore Mines", "Narayanposhi Iron Ore Mines"], "BIRLA CORPORATION LIMITED": ["Birla Cements Satna"], "GANPATI METAL MINING": ["MOIL"] };
@@ -140,16 +139,7 @@
     }
 
     function checkValidation() {
-        const fields = [
-            document.getElementById('customerSelect').value, 
-            document.getElementById('valDate').value, 
-            document.getElementById('valTech').value, 
-            document.getElementById('workSiteSelect').value, 
-            document.getElementById('fleetSelect').value, 
-            document.getElementById('valShift').value, 
-            document.getElementById('valEngTemp').value, 
-            document.getElementById('valEngOil').value
-        ];
+        const fields = [document.getElementById('customerSelect').value, document.getElementById('valDate').value, document.getElementById('valTech').value, document.getElementById('workSiteSelect').value, document.getElementById('fleetSelect').value, document.getElementById('valShift').value, document.getElementById('valEngTemp').value, document.getElementById('valEngOil').value];
         document.getElementById('submitBtn').disabled = fields.some(v => !v || v.trim()==="");
     }
 
@@ -166,10 +156,7 @@
         const btn = document.getElementById('submitBtn');
         btn.innerText = "Processing..."; btn.disabled = true;
         fetch(scriptURL, { method: 'POST', body: new FormData(e.target)})
-        .then(() => { 
-            alert("Success!"); 
-            location.reload(); 
-        })
+        .then(() => { alert("Success!"); location.reload(); })
         .catch(() => { alert("Failed."); btn.disabled = false; });
     });
     </script>
