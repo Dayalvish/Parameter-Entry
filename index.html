@@ -16,15 +16,13 @@
         tr:nth-child(even) .label-cell { background-color: #555555 !important; color: #ffffff !important; font-weight: bold; width: 45%; }
         input, select { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
         .hidden { display: none !important; }
-        .button-group { padding: 20px; text-align: center; background: #f8f9fa; border-top: 1px solid #ddd; }
-        button { padding: 10px 25px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-submit { background-color: #28a745; color: white; width: 100%; }
-        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.6; }
         .status-tag { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
         .locked { background: #f8d7da; color: #721c24; }
         .unlocked { background: #d4edda; color: #155724; }
         .required-star { color: #dc3545; }
         .sync-msg { font-size: 11px; color: #007bff; font-weight: bold; margin-top: 5px; display: block; }
+        .btn-submit { background-color: #28a745; color: white; width: 100%; padding: 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-submit:disabled { background-color: #ccc; }
     </style>
 </head>
 <body>
@@ -47,7 +45,7 @@
                     <tr><td class="label-cell">Work Site <span class="required-star">*</span></td><td><select id="workSiteSelect" name="Work Site" onchange="updateFleet(); checkValidation();"><option value="">-- Select Site --</option></select></td></tr>
                     <tr><td class="label-cell">Fleet ID <span class="required-star">*</span></td><td>
                         <select id="fleetSelect" name="Fleet ID" onchange="checkValidation()"><option value="">-- Select Fleet --</option></select>
-                        <button type="button" onclick="lookupRecentData()" style="background:#007bff; color:white; width:100%; margin-top:10px; border-radius:4px;">Fetch Last Entry for this Fleet</button>
+                        <button type="button" onclick="lookupRecentData()" style="background:#007bff; color:white; width:100%; margin-top:10px; border:none; padding:8px; border-radius:4px; cursor:pointer;">Fetch Last Entry for this Fleet</button>
                         <span id="syncStatus" class="sync-msg"></span>
                     </td></tr>
                     <tr><td class="label-cell">Shift <span class="required-star">*</span></td><td><select name="Shift" id="valShift" onchange="checkValidation()"><option value="">-- Select Shift --</option><option>Shift A</option><option>Shift B</option><option>Shift C</option><option>G Shift</option></select></td></tr>
@@ -87,46 +85,35 @@
                     <tr><td class="label-cell">Feed Pr Coupling</td><td><input type="number" step="any" name="Feed Pr Coupling" class="param-input"></td></tr>
                     <tr><td class="label-cell">Feed Pr Uncoupling</td><td><input type="number" step="any" name="Feed Pr Uncoupling" class="param-input"></td></tr>
                     <tr><td class="label-cell">Rotation Pr Rod To Rod</td><td><input type="number" step="any" name="Rotation Pr Rod To Rod" class="param-input"></td></tr>
-                </tbody>
+                    </tbody>
             </table>
             
-            <div class="button-group hidden" id="formButtons">
+            <div class="hidden" id="formButtons" style="padding: 20px;">
                 <button type="submit" id="submitBtn" class="btn-submit" disabled>Submit Record</button>
             </div>
         </div>
     </form>
 
     <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycby4FCvyRRxfRitd28qv7nNnOGAnZM4YloxLQ7IzDz2WGTJWMGDEfYNAtZpfwt1qE93pKQ/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxGjuSg-wSQuGPalMa6VIIqhj9DYVN53a9TN8o0qiZiAFo8oBaAIJLVZrKL9rC-DCvINQ/exec";
     const passKey = "Epiroc@123";
 
     async function lookupRecentData() {
         const fId = document.getElementById('fleetSelect').value;
         const date = document.getElementById('valDate').value;
         const status = document.getElementById('syncStatus');
-        
         if (!fId || !date) { alert("Select Date and Fleet ID first"); return; }
-        
         status.innerText = "⏳ Searching Base Sheet...";
-        
         try {
             const response = await fetch(`${scriptURL}?get=previousData&fleet=${encodeURIComponent(fId)}&date=${date}`);
             const result = await response.json();
-            
             if (!result.error) {
                 document.querySelectorAll('.param-input').forEach(input => {
-                    if (result[input.name] !== undefined) {
-                        input.value = result[input.name];
-                    }
+                    if (result[input.name] !== undefined) input.value = result[input.name];
                 });
-                status.innerText = "✅ Previous record restored";
-            } else {
-                status.innerText = "ℹ️ No record found for this machine on this date.";
-            }
-        } catch (e) {
-            status.innerText = "⚠️ Connection error.";
-            console.error(e);
-        }
+                status.innerText = "✅ Record restored";
+            } else { status.innerText = "ℹ️ No record found for this machine on this date."; }
+        } catch (e) { status.innerText = "⚠️ Error fetching data."; }
     }
 
     const customerToSites = { "TATA STEEL LTD": ["Noamundi Iron Ore Mines", "Khondbond Iron Ore Mines", "TSL West Bokaro Q-SE", "TSL West Bokaro Q-AB", "Joda Iron Ore Mines"], "ULTRATECH LTD": ["Rajshree Cements", "Kotputli Cement Works", "Manikgarh Cement Works", "Bela Cement Works", "Awarpur", "Kukurdih Cement Works", "Nathwara Cement Works", "Tadipatri Cement Works", "Rawan Cement Works", "Maihar Cement Works"], "AMBUJA CEMENTS LTD": ["Ambuja Darlaghat", "Rabriyawas Cement Works"], "LAFARGE": ["Shella Lime Stone Quarry"], "ACC LTD": ["Wadi Cement Works", "Gagal Cement Works", "Kymore Cement Works"], "ADANI ENTERPRISES": ["Parsa Kenta Coal Mines"], "NMDC LTD": ["BACHELI", "KIRANDUL"], "JSW LTD": ["Nuagaon Iron Ore Mines", "Narayanposhi Iron Ore Mines"], "BIRLA CORPORATION LIMITED": ["Birla Cements Satna"], "GANPATI METAL MINING": ["MOIL"] };
@@ -139,11 +126,7 @@
         siteSelect.innerHTML = '<option value="">-- Select Site --</option>';
         fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
         if (customerToSites[customer]) {
-            customerToSites[customer].forEach(s => { 
-                let opt = document.createElement('option'); 
-                opt.value = opt.text = s; 
-                siteSelect.add(opt); 
-            });
+            customerToSites[customer].forEach(s => { let opt = document.createElement('option'); opt.value = opt.text = s; siteSelect.add(opt); });
         }
     }
 
@@ -152,11 +135,7 @@
         const fleetSelect = document.getElementById('fleetSelect');
         fleetSelect.innerHTML = '<option value="">-- Select Fleet --</option>';
         if (siteToFleet[site]) {
-            siteToFleet[site].forEach(f => { 
-                let opt = document.createElement('option'); 
-                opt.value = opt.text = f; 
-                fleetSelect.add(opt); 
-            });
+            siteToFleet[site].forEach(f => { let opt = document.createElement('option'); opt.value = opt.text = f; fleetSelect.add(opt); });
         }
     }
 
@@ -180,38 +159,19 @@
         document.getElementById('formButtons').classList.toggle('hidden', !match);
         document.getElementById('statusLabel').innerText = match ? "Unlocked" : "Locked";
         document.getElementById('statusLabel').className = "status-tag " + (match ? "unlocked" : "locked");
-        checkValidation();
     });
 
-    const form = document.getElementById('residencyForm');
-    form.addEventListener('submit', e => {
+    document.getElementById('residencyForm').addEventListener('submit', e => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
         btn.innerText = "Processing..."; btn.disabled = true;
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        fetch(scriptURL, { method: 'POST', body: new FormData(e.target)})
         .then(() => { 
-            showSuccess(); 
-            form.reset(); 
-            document.getElementById('protectedContent').classList.add('hidden');
-            document.getElementById('formButtons').classList.add('hidden');
-            document.getElementById('statusLabel').innerText = "Locked";
-            document.getElementById('statusLabel').className = "status-tag locked";
-            btn.innerText = "Submit Record"; 
+            alert("Success!"); 
+            location.reload(); 
         })
-        .catch(() => { 
-            alert("Failed."); 
-            btn.disabled = false; 
-            btn.innerText = "Submit Record"; 
-        });
+        .catch(() => { alert("Failed."); btn.disabled = false; });
     });
-
-    function showSuccess() {
-        const overlay = document.createElement('div');
-        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:9999;";
-        overlay.innerHTML = '<div style="background:white;padding:30px;border-radius:10px;text-align:center;"><div style="color:#28a745;font-size:50px;">✔</div><h3>Data Captured!</h3><p>Record saved to Sheet.</p></div>';
-        document.body.appendChild(overlay);
-        setTimeout(() => { overlay.remove(); }, 3000);
-    }
-</script>
+    </script>
 </body>
 </html>
