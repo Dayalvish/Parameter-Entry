@@ -104,36 +104,37 @@ const scriptURL = _0x1a2b[1];
 const passKey = _0x1a2b[0];
     // New Data Fetch Implementation
     function lookupRecentData() {
-        const fId = document.getElementById('fleetSelect').value;
-        if (!fId) { alert("Select Fleet ID first"); return; }
-        
-        const btn = event.target;
-        btn.innerText = "Searching..."; btn.disabled = true;
+    const fId = document.getElementById('fleetSelect').value;
+    if (!fId) { alert("Select Fleet ID first"); return; }
+    
+    const btn = event.target;
+    btn.innerText = "Searching..."; btn.disabled = true;
 
-        // Fetching latest entry based ONLY on Fleet ID to ensure reliability
-        fetch(scriptURL + "?fleetId=" + encodeURIComponent(fId))
-        .then(r => r.json())
-        .then(d => {
-            if (d && d.length > 0) {
-                // Selects all number inputs to auto-fill
-                const ins = document.querySelectorAll('input[type="number"]');
-                ins.forEach((input, i) => { 
-                    // Maps Column I (Index 8) to the first parameter input
-                    if(d[i+8] !== undefined && d[i+8] !== "") {
-                        input.value = d[i+8];
-                    }
-                });
-                alert("Latest parameters for " + fId + " loaded successfully.");
-            } else { 
-                alert("No previous records found for this Fleet ID."); 
-            }
-        })
-        .catch(e => alert("Under Progress. will be functional shortly'."))
-        .finally(() => { 
-            btn.innerText = "Fetch Last Entry for this Fleet"; 
-            btn.disabled = false; 
-        });
-    }
+    fetch(scriptURL + "?fleetId=" + encodeURIComponent(fId))
+    .then(r => r.json())
+    .then(d => {
+        if (d && d.length > 0) {
+            const ins = document.querySelectorAll('input[type="number"]');
+            ins.forEach((input, i) => { 
+                if(d[i+8] !== undefined && d[i+8] !== "") {
+                    input.value = d[i+8];
+                }
+            });
+            alert("Latest parameters for " + fId + " loaded successfully.");
+        } else { 
+            // Your custom message for Phase II
+            alert("Under Progress. Will be functional shortly."); 
+        }
+    })
+    .catch(e => {
+        // Your custom message for the connection error
+        alert("Under Progress. Will be functional shortly.");
+    })
+    .finally(() => { 
+        btn.innerText = "Fetch Last Entry for this Fleet"; 
+        btn.disabled = false; 
+    });
+}
  // --- Technical Logic ---
     const customerToSites = { "TATA STEEL LTD": ["Noamundi Iron Ore Mines", "Khondbond Iron Ore Mines", "TSL West Bokaro Q-SE", "TSL West Bokaro Q-AB", "Joda Iron Ore Mines"], "ULTRATECH LTD": ["Rajshree Cements", "Kotputli Cement Works", "Manikgarh Cement Works", "Bela Cement Works", "Awarpur", "Kukurdih Cement Works", "Nathwara Cement Works", "Tadipatri Cement Works", "Rawan Cement Works", "Maihar Cement Works"], "AMBUJA CEMENTS LTD": ["Ambuja Darlaghat", "Rabriyawas Cement Works"], "LAFARGE": ["Shella Lime Stone Quarry"], "ACC LTD": ["Wadi Cement Works", "Gagal Cement Works", "Kymore Cement Works"], "ADANI ENTERPRISES": ["Parsa Kenta Coal Mines"], "NMDC LTD": ["BACHELI", "KIRANDUL"], "JSW LTD": ["Nuagaon Iron Ore Mines", "Narayanposhi Iron Ore Mines"], "BIRLA CORPORATION LIMITED": ["Birla Cements Satna"], "GANPATI METAL MINING": ["MOIL"] };
     const siteToFleet = { "Ambuja Darlaghat": ["DarlaT40"], "Wadi Cement Works": ["WadiSRD50", "WadiFRD50"], "Rabriyawas Cement Works": ["RbwsD50I", "RbwsD50II"], "Rajshree Cements": ["RjshreeROCL6", "RjshreeFRD50"], "Noamundi Iron Ore Mines": ["NoaD65I", "NoaD65II", "NoaD65III", "KTMD65I", "KTMD65II"], "Kotputli Cement Works": ["KotputliT40I", "KotputliT40II", "KotputliT40III"], "Manikgarh Cement Works": ["ManikgarhT40"], "Khondbond Iron Ore Mines": ["KhondbondD65", "KhondbondL8"], "Shella Lime Stone Quarry": ["LafargeD60", "LafargeT40"], "Bela Cement Works": ["BelaFRD50"], "Joda Iron Ore Mines": ["JodaD65I", "JodaD65II"], "Narayanposhi Iron Ore Mines": ["NposhiT45I", "NposhiT45II"], "Nuagaon Iron Ore Mines": ["NuagaonT45III"], "TSL West Bokaro Q-SE": ["BokaroD65I", "BokaroPRD50", "QSE-DM14", "QSE-DM15"], "TSL West Bokaro Q-AB": ["QAB-DM2K10", "QAB-DM2K11"], "Gagal Cement Works": ["GagalFRD50", "GagalT40"], "Kymore Cement Works": ["KymoreT40", "KymoreMGMFRD50", "KymoreBMGFRD50"], "Awarpur": ["AwarpurD50I"], "Kukurdih Cement Works": ["KukurdihT45I"], "Nathwara Cement Works": ["NathwaraT40I", "NathwaraT40II"], "Tadipatri Cement Works": ["TadipatriT45I"], "Rawan Cement Works": ["RawanD50I"], "Maihar Cement Works": ["MaiharT40I"], "Parsa Kenta Coal Mines": ["US091130"], "Birla Cements Satna": ["BirlaT40I"], "BACHELI": ["NMDCT45I", "NMDCT45III", "NMDCT45IV"], "KIRANDUL": ["NMDCT45II"], "MOIL": ["GanpatiT40I"] };
@@ -192,6 +193,7 @@ const passKey = _0x1a2b[0];
 </script> 
 </body>
 </html>
+
 
 
 
