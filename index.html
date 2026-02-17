@@ -194,52 +194,25 @@ const passKey = _0x1a2b[0];
     });
 
     const form = document.getElementById('residencyForm');
-
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    
-    btn.innerText = "Syncing to India & Sheet..."; 
-    btn.disabled = true;
-
-    // We stop using fetch(scriptURL) and use the internal bridge instead
-    google.script.run
-        .withSuccessHandler(function(response) {
-            // This runs after BOTH Sheet and Firebase are updated
-            alert(response); 
-            form.reset(); 
-            if (typeof updateSites === "function") updateSites(); 
-            btn.innerText = "Submit Record";
-            btn.disabled = false;
-        })
-        .withFailureHandler(function(err) {
-            alert("Critical Sync Error: " + err);
-            btn.disabled = false; 
-            btn.innerText = "Retry Submit";
-        })
-        .processForm(form); // Triggers the Dual-Sync function in Code.gs
-});
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.innerText = "Processing..."; btn.disabled = true;
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(() => { showSuccess(); form.reset(); updateSites(); btn.innerText = "Submit Record"; })
+        .catch(() => { alert("Failed."); btn.disabled = false; btn.innerText = "Submit Record"; });
+    });
 
     function showSuccess() {
-    const overlay = document.createElement('div');
-    overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;color:white;font-family:sans-serif;";
-    overlay.innerHTML = `
-        <div style="font-size:70px;">✅</div>
-        <div style="font-size:24px;margin-top:20px;">Data Sent to India</div>
-        <button onclick="this.parentElement.remove()" style="margin-top:30px;padding:10px 20px;cursor:pointer;">Close</button>
-    `;
-    document.body.appendChild(overlay);
-    
-    // Auto-remove after 3 seconds
-    setTimeout(() => { if(overlay) overlay.remove(); }, 3500);
-}
+        const overlay = document.createElement('div');
+        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:9999;";
+        overlay.innerHTML = '<div style="background:white;padding:30px;border-radius:10px;text-align:center;"><div style="color:#28a745;font-size:50px;">✔</div><h3>Data Captured!</h3><p>Record saved to Sheet.</p></div>';
+        document.body.appendChild(overlay);
+        setTimeout(() => { overlay.remove(); }, 3000);
+    }
 </script> 
 </body>
 </html>
-
-
-
-
 
 
 
