@@ -194,14 +194,31 @@ const passKey = _0x1a2b[0];
     });
 
     const form = document.getElementById('residencyForm');
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.innerText = "Processing..."; btn.disabled = true;
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-        .then(() => { showSuccess(); form.reset(); updateSites(); btn.innerText = "Submit Record"; })
-        .catch(() => { alert("Failed."); btn.disabled = false; btn.innerText = "Submit Record"; });
-    });
+
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    
+    btn.innerText = "Syncing to India & Sheet..."; 
+    btn.disabled = true;
+
+    // We stop using fetch(scriptURL) and use the internal bridge instead
+    google.script.run
+        .withSuccessHandler(function(response) {
+            // response is the message returned from your processForm function
+            showSuccess(); 
+            form.reset(); 
+            if (typeof updateSites === "function") updateSites(); 
+            btn.innerText = "Submit Record";
+            btn.disabled = false;
+        })
+        .withFailureHandler(function(err) {
+            alert("Critical Sync Error: " + err);
+            btn.disabled = false; 
+            btn.innerText = "Retry Submit";
+        })
+        .processForm(form); // This calls the 'Dual-Sync' function in your Code.gs
+});
 
     function showSuccess() {
         const overlay = document.createElement('div');
@@ -213,6 +230,7 @@ const passKey = _0x1a2b[0];
 </script> 
 </body>
 </html>
+
 
 
 
