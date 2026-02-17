@@ -177,35 +177,38 @@
         checkValidation();
     });
 
-    form.addEventListener('submit', e => {
-    e.preventDefault(); // This stops the form from closing/refreshing
-    
-    // 1. Show a loading state so you know it's working
-    const submitBtn = form.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = "Sending...";
+    // Ensure this matches your existing form's ID or class
+const parameterForm = document.querySelector('form'); 
 
-    // 2. Prepare the data
-    let formData = new FormData(form);
+parameterForm.addEventListener('submit', function(e) {
+    e.preventDefault(); // <--- CRITICAL: Stops the form from closing/refreshing
     
-    // IMPORTANT: Add the password so the GS code unlocks the door
-    formData.append("password", passKey); 
+    // 1. Visual Feedback
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerText = "Sending to India...";
 
-    // 3. Send to Google
-    fetch(scriptURL, { 
-        method: 'POST', 
+    // 2. Prepare Data (Using the hex-encoded passKey)
+    let formData = new FormData(parameterForm);
+    formData.append("password", passKey); // Unlocks the GS 'Security Guard'
+
+    // 3. Send the Data
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors', // Bypasses CORS blocks
         body: formData
     })
-    .then(response => {
-        alert("✅ Success! Data sent to Sheet and India.");
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = "Submit";
-        form.reset(); // Now it's safe to clear/close the form
+    .then(() => {
+        alert("✅ SUCCESS: Data sent to Sheet and Firebase!");
+        btn.disabled = false;
+        btn.innerText = "Submit";
+        parameterForm.reset(); // Safely clear the form ONLY after success
     })
-    .catch(error => {
-        console.error('Error!', error.message);
-        alert("❌ Failed to send. Check console (F12).");
-        submitBtn.disabled = false;
+    .catch(err => {
+        console.error("Submission Error:", err);
+        alert("❌ FAILED: Check your internet or GS deployment.");
+        btn.disabled = false;
+        btn.innerText = "Submit";
     });
 });
 
@@ -219,6 +222,7 @@
 </script> 
 </body>
 </html>
+
 
 
 
