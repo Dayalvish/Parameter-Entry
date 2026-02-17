@@ -221,15 +221,22 @@ form.addEventListener('submit', e => {
 });
 
     function showSuccess() {
-        const overlay = document.createElement('div');
-        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:9999;";
-        overlay.innerHTML = '<div style="background:white;padding:30px;border-radius:10px;text-align:center;"><div style="color:#28a745;font-size:50px;">✔</div><h3>Data Captured!</h3><p>Record saved to Sheet.</p></div>';
-        document.body.appendChild(overlay);
-        setTimeout(() => { overlay.remove(); }, 3000);
-    }
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;color:white;font-family:sans-serif;";
+    overlay.innerHTML = `
+        <div style="font-size:70px;">✅</div>
+        <div style="font-size:24px;margin-top:20px;">Data Sent to India</div>
+        <button onclick="this.parentElement.remove()" style="margin-top:30px;padding:10px 20px;cursor:pointer;">Close</button>
+    `;
+    document.body.appendChild(overlay);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(() => { if(overlay) overlay.remove(); }, 3500);
+}
 </script> 
 </body>
 </html>
+
 
 
 
