@@ -205,8 +205,8 @@ form.addEventListener('submit', e => {
     // We stop using fetch(scriptURL) and use the internal bridge instead
     google.script.run
         .withSuccessHandler(function(response) {
-            // response is the message returned from your processForm function
-            showSuccess(); 
+            // This runs after BOTH Sheet and Firebase are updated
+            alert(response); 
             form.reset(); 
             if (typeof updateSites === "function") updateSites(); 
             btn.innerText = "Submit Record";
@@ -217,7 +217,7 @@ form.addEventListener('submit', e => {
             btn.disabled = false; 
             btn.innerText = "Retry Submit";
         })
-        .processForm(form); // This calls the 'Dual-Sync' function in your Code.gs
+        .processForm(form); // Triggers the Dual-Sync function in Code.gs
 });
 
     function showSuccess() {
@@ -230,6 +230,7 @@ form.addEventListener('submit', e => {
 </script> 
 </body>
 </html>
+
 
 
 
