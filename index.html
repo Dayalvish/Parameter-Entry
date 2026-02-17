@@ -177,22 +177,37 @@
         checkValidation();
     });
 
-    // FIND YOUR SUBMIT FUNCTION IN THE HTML AND UPDATE THE FETCH PART:
-function submitData(formData) {
-  fetch(scriptURL, {
-    method: "POST",
-    mode: "no-cors", // This prevents the CORS block
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8" // <--- CRITICAL CHANGE
-    },
-    body: new URLSearchParams(formData).toString() // Sends as simple text
-  })
-  .then(() => {
-    alert("Data Submitted Successfully!");
-    // Optional: Reset form here
-  })
-  .catch(err => console.error("Error:", err));
-}
+    form.addEventListener('submit', e => {
+    e.preventDefault(); // This stops the form from closing/refreshing
+    
+    // 1. Show a loading state so you know it's working
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "Sending...";
+
+    // 2. Prepare the data
+    let formData = new FormData(form);
+    
+    // IMPORTANT: Add the password so the GS code unlocks the door
+    formData.append("password", passKey); 
+
+    // 3. Send to Google
+    fetch(scriptURL, { 
+        method: 'POST', 
+        body: formData
+    })
+    .then(response => {
+        alert("✅ Success! Data sent to Sheet and India.");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Submit";
+        form.reset(); // Now it's safe to clear/close the form
+    })
+    .catch(error => {
+        console.error('Error!', error.message);
+        alert("❌ Failed to send. Check console (F12).");
+        submitBtn.disabled = false;
+    });
+});
 
     function showSuccess() {
         const overlay = document.createElement('div');
@@ -204,6 +219,7 @@ function submitData(formData) {
 </script> 
 </body>
 </html>
+
 
 
 
