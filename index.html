@@ -177,15 +177,22 @@
         checkValidation();
     });
 
-    const form = document.getElementById('residencyForm');
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.innerText = "Processing..."; btn.disabled = true;
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-        .then(() => { showSuccess(); form.reset(); updateSites(); btn.innerText = "Submit Record"; })
-        .catch(() => { alert("Failed."); btn.disabled = false; btn.innerText = "Submit Record"; });
-    });
+    // FIND YOUR SUBMIT FUNCTION IN THE HTML AND UPDATE THE FETCH PART:
+function submitData(formData) {
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors", // This prevents the CORS block
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8" // <--- CRITICAL CHANGE
+    },
+    body: new URLSearchParams(formData).toString() // Sends as simple text
+  })
+  .then(() => {
+    alert("Data Submitted Successfully!");
+    // Optional: Reset form here
+  })
+  .catch(err => console.error("Error:", err));
+}
 
     function showSuccess() {
         const overlay = document.createElement('div');
@@ -197,5 +204,6 @@
 </script> 
 </body>
 </html>
+
 
 
