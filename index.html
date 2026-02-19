@@ -16,13 +16,56 @@
         tr:nth-child(even) .label-cell { background-color: #555555 !important; color: #ffffff !important; font-weight: bold; width: 45%; }
         input, select { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
         .hidden { display: none; }
-        .button-group { padding: 20px; text-align: center; background: #f8f9fa; border-top: 1px solid #ddd; }
-        button { padding: 10px 25px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-submit { background-color: #28a745; color: white; }
-        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.6; }
-        .status-tag { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
-        .locked { background: #f8d7da; color: #721c24; }
-        .unlocked { background: #d4edda; color: #155724; }
+         /* Updated Button Group Container */
+        #formButtons { 
+            padding: 30px; 
+            text-align: center; 
+            background: #f8f9fa; 
+            border-top: 1px solid #ddd; 
+        }
+
+        /* The New "Beautiful" Submit Button */
+        #submitBtn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFB800 100%); /* Epiroc Golden Yellow */
+            color: #1a1a1a;
+            border: 2px solid #CC9900;
+            padding: 16px 60px;
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px; /* Rounded pill shape */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Hover Effect - Grows and glows when valid */
+        #submitBtn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #FFB800 0%, #FFD700 100%);
+            transform: scale(1.05); 
+            box-shadow: 0 8px 25px rgba(255, 184, 0, 0.4);
+        }
+
+        /* Click Effect */
+        #submitBtn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        /* Disabled State - Matches your form's clean look */
+        #submitBtn:disabled {
+            background: #e0e0e0 !important;
+            color: #9e9e9e !important;
+            border: 2px solid #bdbdbd !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Status Tags */
+        .status-tag { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .locked { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .unlocked { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .required-star { color: #dc3545; }
     </style>
 </head>
@@ -33,69 +76,70 @@
         <h2>EPIROC FLEET PARAMETER ENTRY FORM</h2>
     </div>
 
-    <form id="residencyForm">
-        <div class="sheet-container">
-            <table>
-                <tr><td class="label-cell">Customer Name <span class="required-star">*</span></td><td><select id="customerSelect" name="Customer Name" onchange="updateSites(); checkValidation();" required><option value="">-- Select --</option><option value="TATA STEEL LTD">TATA STEEL LTD</option><option value="ULTRATECH LTD">ULTRATECH LTD</option><option value="AMBUJA CEMENTS LTD">AMBUJA CEMENTS LTD</option><option value="ACC LTD">ACC LTD</option><option value="LAFARGE">LAFARGE</option><option value="JSW LTD">JSW LTD</option><option value="ADANI ENTERPRISES">ADANI ENTERPRISES</option><option value="NMDC LTD">NMDC LTD</option><option value="BIRLA CORPORATION LIMITED">BIRLA CORPORATION LIMITED</option><option value="GANPATI METAL MINING">GANPATI METAL MINING</option></select></td></tr>
-                <tr><td class="label-cell">Date <span class="required-star">*</span></td><td><input type="date" name="Date" id="valDate" oninput="checkValidation()" required></td></tr>
-                <tr><td class="label-cell">Technician Name <span class="required-star">*</span></td><td><input type="text" name="Technician Name" id="valTech" oninput="checkValidation()" required></td></tr>
-                <tr><td class="label-cell">Unlock Password</td><td><input type="password" id="passInput" placeholder="Enter password"></td></tr>
-                <tr><td class="label-cell">Status</td><td><span id="statusLabel" class="status-tag locked">Locked</span></td></tr>
+   <form id="residencyForm">
+    <div class="sheet-container">
+        <table>
+            <tr><td class="label-cell">Customer Name <span class="required-star">*</span></td><td><select id="customerSelect" name="Customer Name" onchange="updateSites(); checkValidation();" required><option value="">-- Select --</option><option value="TATA STEEL LTD">TATA STEEL LTD</option><option value="ULTRATECH LTD">ULTRATECH LTD</option><option value="AMBUJA CEMENTS LTD">AMBUJA CEMENTS LTD</option><option value="ACC LTD">ACC LTD</option><option value="LAFARGE">LAFARGE</option><option value="JSW LTD">JSW LTD</option><option value="ADANI ENTERPRISES">ADANI ENTERPRISES</option><option value="NMDC LTD">NMDC LTD</option><option value="BIRLA CORPORATION LIMITED">BIRLA CORPORATION LIMITED</option><option value="GANPATI METAL MINING">GANPATI METAL MINING</option></select></td></tr>
+            <tr><td class="label-cell">Date <span class="required-star">*</span></td><td><input type="date" name="Date" id="valDate" oninput="checkValidation()" required></td></tr>
+            <tr><td class="label-cell">Technician Name <span class="required-star">*</span></td><td><input type="text" name="Technician Name" id="valTech" oninput="checkValidation()" required></td></tr>
+            <tr><td class="label-cell">Unlock Password</td><td><input type="password" id="passInput" placeholder="Enter password to unlock"></td></tr>
+            <tr><td class="label-cell">Status</td><td><span id="statusLabel" class="status-tag locked">Locked</span></td></tr>
 
-                <tbody id="protectedContent" class="hidden">
-                    <tr><td class="label-cell">Work Site <span class="required-star">*</span></td><td><select id="workSiteSelect" name="Work Site" onchange="updateFleet(); checkValidation();"><option value="">-- Select Site --</option></select></td></tr>
-                    <tr><td class="label-cell">Fleet ID <span class="required-star">*</span></td><td><select id="fleetSelect" name="Fleet ID" onchange="checkValidation()"><option value="">-- Select Fleet --</option></select></td></tr>
-                    <tr>
-    <td class="label-cell">Recent Entry Lookup</td>
-    <td>
-        <button type="button" onclick="lookupRecentData()" style="background:#007bff; color:white; width:100%;">Fetch Last Entry for this Fleet</button>
-    </td>
-</tr>
-                    <tr><td class="label-cell">Shift <span class="required-star">*</span></td><td><select name="Shift" id="valShift" onchange="checkValidation()"><option value="">-- Select Shift --</option><option>Shift A</option><option>Shift B</option><option>Shift C</option><option>G Shift</option></select></td></tr>
-                    
-                    <tr><td class="label-cell">Rotation Pressure</td><td><input type="number" step="any" name="Rotation Pressure"></td></tr>
-                    <tr><td class="label-cell">Rotation RPM (Smartroc & PV)</td><td><input type="number" step="any" name="Rotation RPM (Smartroc & PV)"></td></tr>
-                    <tr><td class="label-cell">Receiver Pr NoLoad (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr NoLoad (DTH & DS)"></td></tr>
-                    <tr><td class="label-cell">Receiver Pr Unload (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr Unload (DTH & DS)"></td></tr>
-                    <tr><td class="label-cell">Receiver Pr Load (DTH & DS)</td><td><input type="number" step="any" name="Receiver Pr Load (DTH & DS)"></td></tr>
-                    <tr><td class="label-cell">Reduced Air pressure (DTH)</td><td><input type="number" step="any" name="Reduced Air pressure (DTH)"></td></tr>
-                    <tr><td class="label-cell">Full Air Set Pr (DTH)</td><td><input type="number" step="any" name="Full Air Set Pr (DTH)"></td></tr>
-                    <tr><td class="label-cell">Low Impact (Top Hammer)</td><td><input type="number" step="any" name="Low Impact (Top Hammer)"></td></tr>
-                    <tr><td class="label-cell">Air Pressure Full</td><td><input type="number" step="any" name="Air Pressure Full"></td></tr>
-                    <tr><td class="label-cell">Interstage Pr Load (DTH)</td><td><input type="number" step="any" name="Interstage Pr Load (DTH)"></td></tr>
-                    <tr><td class="label-cell">Feed Pr Low Impact</td><td><input type="number" step="any" name="Feed Pr Low Impact"></td></tr>
-                    <tr><td class="label-cell">Feed Pr High Impact</td><td><input type="number" step="any" name="Feed Pr High Impact"></td></tr>
-                    <tr><td class="label-cell">HECL pr High Impact</td><td><input type="number" step="any" name="HECL pr High Impact"></td></tr>
-                    <tr><td class="label-cell">DCT (%)</td><td><input type="number" step="any" name="DCT (%)"></td></tr>
-                    <tr><td class="label-cell">Water injection (%)</td><td><input type="number" step="any" name="Water injection (%)"></td></tr>
-                    <tr><td class="label-cell">Compressor Load (Smartroc & PV)</td><td><input type="number" step="any" name="Compressor Load (Smartroc & PV)"></td></tr>
-                    <tr><td class="label-cell">Engine RPM Drilling</td><td><input type="number" step="any" name="Engine RPM Drilling"></td></tr>
-                    <tr><td class="label-cell">Engine Temp <span class="required-star">*</span></td><td><input type="number" step="any" name="Engine Temp" id="valEngTemp" oninput="checkValidation()"></td></tr>
-                    <tr><td class="label-cell">Hyd-Oil Temp</td><td><input type="number" step="any" name="Hyd-Oil Temp"></td></tr>
-                    <tr><td class="label-cell">Ambient Temp</td><td><input type="number" step="any" name="Ambient Temp"></td></tr>
-                    <tr><td class="label-cell">Engine load Drilling</td><td><input type="number" step="any" name="Engine load Drilling"></td></tr>
-                    <tr><td class="label-cell">Boost Pressure</td><td><input type="number" step="any" name="Boost Pressure"></td></tr>
-                    <tr><td class="label-cell">Engine oil pressure <span class="required-star">*</span></td><td><input type="number" step="any" name="Engine oil pressure" id="valEngOil" oninput="checkValidation()"></td></tr>
-                    <tr><td class="label-cell">Air intake temp</td><td><input type="number" step="any" name="Air intake temp"></td></tr>
-                    <tr><td class="label-cell">Compressor Temp (L & DS)</td><td><input type="number" step="any" name="Compressor Temp (L & DS)"></td></tr>
-                    <tr><td class="label-cell">Compressor Temp (SRT40-T45& DTH) (H) (DTH)</td><td><input type="number" step="any" name="Compressor Temp (SRT40-T45& DTH) (H) (DTH)"></td></tr>
-                    <tr><td class="label-cell">Charging Voltage</td><td><input type="number" step="any" name="Charging Voltage"></td></tr>
-                    <tr><td class="label-cell">Fuel Pressure</td><td><input type="number" step="any" name="Fuel Pressure"></td></tr>
-                    <tr><td class="label-cell">Tramming</td><td><input type="number" step="any" name="Tramming"></td></tr>
-                    <tr><td class="label-cell">Y193 Inlet Pressure (Smartroc)</td><td><input type="number" step="any" name="Y193 Inlet Pressure (Smartroc)"></td></tr>
-                    <tr><td class="label-cell">High Impact (Top Hammer)</td><td><input type="number" step="any" name="High Impact (Top Hammer)"></td></tr>
-                    <tr><td class="label-cell">Damper Pressure High (Top Hammer)</td><td><input type="number" step="any" name="Damper Pressure High (Top Hammer)"></td></tr>
-                    <tr><td class="label-cell">Feed Pr Coupling</td><td><input type="number" step="any" name="Feed Pr Coupling"></td></tr>
-                    <tr><td class="label-cell">Feed Pr Uncoupling</td><td><input type="number" step="any" name="Feed Pr Uncoupling"></td></tr>
-                    <tr><td class="label-cell">Rotation Pr Rod To Rod</td><td><input type="number" step="any" name="Rotation Pr Rod To Rod"></td></tr>
-                </tbody>
-            </table>
-            
-            <div class="button-group hidden" id="formButtons">
-                <button type="submit" id="submitBtn" class="btn-submit" disabled>Submit Record</button>
-            </div>
-        </div>
-    </form>
+            <tbody id="protectedContent" class="hidden">
+    <tr><td class="label-cell">Work Site <span class="required-star">*</span></td><td><select id="workSiteSelect" name="Work Site" onchange="updateFleet(); checkValidation();"><option value="">-- Select Site --</option></select></td></tr>
+    <tr><td class="label-cell">Fleet ID <span class="required-star">*</span></td><td><select id="fleetSelect" name="Fleet ID" onchange="checkValidation()"><option value="">-- Select Fleet --</option></select></td></tr>
+    <tr><td class="label-cell">Recent Entry Lookup</td><td><button type="button" onclick="lookupRecentData()" style="background:#007bff; color:white; width:100%;">Fetch Last Entry for this Fleet</button></td></tr>
+    <tr><td class="label-cell">Shift <span class="required-star">*</span></td><td><select name="Shift" id="valShift" onchange="checkValidation()"><option value="">-- Select Shift --</option><option>Shift A</option><option>Shift B</option><option>Shift C</option><option>G Shift</option></select></td></tr>
+
+    <tr><td class="label-cell">Rotation Pressure</td><td><input type="number" step="any" name="Rotation Pressure" min="0" max="120" placeholder="Enter Rotation Pressure" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Rotation RPM</td><td><input type="number" step="any" name="Rotation RPM" min="0" max="180" placeholder="Enter Rotation RPM (Smartroc & PV)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Receiver Pr NoLoad</td><td><input type="number" step="any" name="Receiver Pr NoLoad" min="0" max="16" placeholder="Enter Receiver Pr NoLoad (DTH & DS)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Receiver Pr Unload</td><td><input type="number" step="any" name="Receiver Pr Unload" min="0" max="30" placeholder="Enter Receiver Pr Unload (DTH & DS)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Receiver Pr Load</td><td><input type="number" step="any" name="Receiver Pr Load" min="0" max="30" placeholder="Enter Receiver Pr Load (DTH & DS)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Reduced Air pressure</td><td><input type="number" step="any" name="Reduced Air pressure" min="0" max="30" placeholder="Enter Reduced Air pressure (DTH)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Full Air Set Pr</td><td><input type="number" step="any" name="Full Air Set Pr" min="0" max="30" placeholder="Enter Full Air Set Pr (DTH)" oninput="checkValidation()"></td></tr>
+    
+    <tr><td class="label-cell">Low Impact</td><td><input type="number" step="any" name="Low Impact" min="0" max="250" placeholder="Enter Low Impact (Top Hammer)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Air Pressure Full</td><td><input type="number" step="any" name="Air Pressure Full" min="0" max="30" placeholder="Enter Air Pressure Full" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Interstage Pr Load</td><td><input type="number" step="any" name="Interstage Pr Load" min="0" max="30" placeholder="Enter Interstage Pr Load (DTH)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Feed Pr Low Impact</td><td><input type="number" step="any" name="Feed Pr Low Impact" min="0" max="150" placeholder="Enter Feed Pr Low Impact" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Feed Pr High Impact</td><td><input type="number" step="any" name="Feed Pr High Impact" min="0" max="150" placeholder="Enter Feed Pr High Impact" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">HECL pr High Impact</td><td><input type="number" step="any" name="HECL pr High Impact" min="0" max="30" placeholder="Enter HECL pr High Impact" oninput="checkValidation()"></td></tr>
+    
+    <tr><td class="label-cell">DCT %</td><td><input type="number" step="any" name="DCT %" min="0" max="100" placeholder="Enter DCT (%)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Water injection %</td><td><input type="number" step="any" name="Water injection %" min="0" max="100" placeholder="Enter Water injection (%)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Compressor Load</td><td><input type="number" step="any" name="Compressor Load" min="0" max="100" placeholder="Enter Compressor Load (Smartroc & PV)" oninput="checkValidation()"></td></tr>
+    
+    <tr><td class="label-cell">Engine RPM Drilling</td><td><input type="number" step="any" name="Engine RPM Drilling" min="800" max="2500" placeholder="Enter Engine RPM Drilling" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Engine Temp <span class="required-star">*</span></td><td><input type="number" step="any" name="Engine Temp" id="valEngTemp" min="50" max="130" placeholder="Enter Engine Temp" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Hyd-Oil Temp</td><td><input type="number" step="any" name="Hyd-Oil Temp" min="0" max="100" placeholder="Enter Hyd-Oil Temp" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Ambient Temp</td><td><input type="number" step="any" name="Ambient Temp" min="-55" max="55" placeholder="Enter Ambient Temp" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Engine load Drilling</td><td><input type="number" step="any" name="Engine load Drilling" min="0" max="100" placeholder="Enter Engine load Drilling" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Boost Pressure</td><td><input type="number" step="any" name="Boost Pressure" min="0" max="2" placeholder="Enter Boost Pressure" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Engine oil pressure <span class="required-star">*</span></td><td><input type="number" step="any" name="Engine oil pressure" id="valEngOil" min="0" max="8" placeholder="Enter Engine oil pressure" oninput="checkValidation()"></td></tr>
+    
+    <tr><td class="label-cell">Air intake temp</td><td><input type="number" step="any" name="Air intake temp" min="0" max="100" placeholder="Enter Air intake temp" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Compressor Temp (L & DS)</td><td><input type="number" step="any" name="Compressor Temp (L & DS)" min="0" max="150" placeholder="Enter Compressor Temp" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Compressor Temp (H)</td><td><input type="number" step="any" name="Compressor Temp (H)" min="0" max="150" placeholder="Enter Compressor Temp (SRT40-T45 & DTH)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Charging Voltage</td><td><input type="number" step="any" name="Charging Voltage" min="0" max="32" placeholder="Enter Charging Voltage" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Fuel Pressure</td><td><input type="number" step="any" name="Fuel Pressure" min="0" max="25" placeholder="Enter Fuel Pressure" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Tramming</td><td><input type="number" step="any" name="Tramming" min="0" max="100" placeholder="Enter Tramming" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Y193 Inlet Pressure</td><td><input type="number" step="any" name="Y193 Inlet Pressure" min="0" max="30" placeholder="Enter Y193 Inlet Pressure (Smartroc)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">High Impact</td><td><input type="number" step="any" name="High Impact" min="0" max="280" placeholder="Enter High Impact (Top Hammer)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Damper Pressure High</td><td><input type="number" step="any" name="Damper Pressure High" min="0" max="250" placeholder="Enter Damper Pressure High (Top Hammer)" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Feed Pr Coupling</td><td><input type="number" step="any" name="Feed Pr Coupling" min="0" max="250" placeholder="Enter Feed Pr Coupling" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Feed Pr Uncoupling</td><td><input type="number" step="any" name="Feed Pr Uncoupling" min="0" max="250" placeholder="Enter Feed Pr Uncoupling" oninput="checkValidation()"></td></tr>
+    <tr><td class="label-cell">Rotation Pr Rod To Rod</td><td><input type="number" step="any" name="Rotation Pr Rod To Rod" min="0" max="160" placeholder="Enter Rotation Pr Rod To Rod" oninput="checkValidation()"></td></tr>
+</tbody>
+        </table>
+    </div>
+
+    <div id="formButtons" class="hidden">
+        <button type="submit" id="submitBtn" disabled>
+            🚀 Submit Fleet Log Record
+        </button>
+    </div>
+</form>
 
     <script>
     // Scrambled Connection (Updated with your Version 32+ URL)
@@ -163,10 +207,52 @@
         }
     }
 
-    function checkValidation() {
-        const fields = [document.getElementById('customerSelect').value, document.getElementById('valDate').value, document.getElementById('valTech').value, document.getElementById('workSiteSelect').value, document.getElementById('fleetSelect').value, document.getElementById('valShift').value, document.getElementById('valEngTemp').value, document.getElementById('valEngOil').value];
-        document.getElementById('submitBtn').disabled = fields.some(v => !v || v.trim()==="");
+   function checkValidation() {
+    // 1. Instant Correction: Reset to 0 if out of range
+    const activeEl = document.activeElement;
+    if (activeEl && activeEl.type === 'number') {
+        forceLimitToZero(activeEl);
     }
+
+    // 2. Button Enabling Logic (Checking Required Fields)
+    const requiredFields = [
+        document.getElementById('customerSelect').value,
+        document.getElementById('valDate').value,
+        document.getElementById('valTech').value,
+        document.getElementById('workSiteSelect').value,
+        document.getElementById('fleetSelect').value,
+        document.getElementById('valShift').value,
+        document.getElementById('valEngTemp').value,
+        document.getElementById('valEngOil').value
+    ];
+
+    // Enable button only if all required fields are filled
+    document.getElementById('submitBtn').disabled = requiredFields.some(v => !v || v.trim() === "");
+}
+
+function forceLimitToZero(input) {
+    if (!input.min || !input.max) return;
+    
+    let val = parseFloat(input.value);
+    let min = parseFloat(input.min);
+    let max = parseFloat(input.max);
+
+    if (isNaN(val)) return;
+
+    // Instant Correction: Reset to 0 if out of bounds
+    if (val > max || (val < min && input.value.length >= String(min).length)) {
+        input.value = 0; 
+        input.style.backgroundColor = "#ffcccc"; // Red flash for error
+        alert("Invalid Entry! Must be between " + min + " and " + max + ". Value reset to 0.");
+        
+        setTimeout(() => { 
+            input.style.backgroundColor = ""; 
+        }, 300);
+        
+        input.focus(); 
+    }
+}
+
 
     document.getElementById('passInput').addEventListener('input', function() {
         const match = this.value === passKey;
@@ -223,6 +309,7 @@ if (parameterForm) {
 </script> 
 </body>
 </html>
+
 
 
 
